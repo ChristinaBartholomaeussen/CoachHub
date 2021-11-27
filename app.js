@@ -9,12 +9,13 @@ dotenv.config();
 
 import {connection} from "./database/config.js";
 
-connection.query("SELECT * FROM 'users");
 
+connection.connect();
+console.log(connection);
 
 app.get("/", (req, res) => {
-    var bla = connection.query("SELECT * FROM 'users");
-    res.json(bla);
+    
+   
 });
 
 
