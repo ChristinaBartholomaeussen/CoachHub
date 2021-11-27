@@ -1,0 +1,29 @@
+{
+  "name": "eksamensprojekt",
+  "version": "1.0.0",
+  "description": "Node js eksamensprojekt",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChristinaBartholomaeussen/NodeJsEksamen.git"
+  },
+  "author": "Christina Bartholomæussen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ChristinaBartholomaeussen/NodeJsEksamen/issues"
+  },
+  "homepage": "https://github.com/ChristinaBartholomaeussen/NodeJsEksamen#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mysql": "^2.18.1",
+    "pg": "^8.7.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
