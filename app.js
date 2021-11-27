@@ -4,18 +4,20 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 import dotenv from "dotenv";
+
 dotenv.config();
 
 
-import {connection} from "./database/config.js";
+import { connection } from "./database/config.js";
 
-
-connection.connect();
-console.log(connection);
 
 app.get("/", (req, res) => {
-    
-   
+
+    connection.query("SELECT idmytest FROM mytest", function (err, result) {
+        res.send(result);
+    });
+
+
 });
 
 
