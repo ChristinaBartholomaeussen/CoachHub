@@ -1,12 +1,21 @@
 import express from "express";
 const app = express();
 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+import dotenv from "dotenv";
+dotenv.config();
+
+
+import {connection} from "./database/config.js";
+
+connection.query("SELECT * FROM 'users");
+
 
 app.get("/", (req, res) => {
-    res.send({
-        message: "Hello World"
-    })
-})
+    var bla = connection.query("SELECT * FROM 'users");
+    res.json(bla);
+});
 
 
 
