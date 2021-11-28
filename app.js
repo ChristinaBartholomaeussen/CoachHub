@@ -3,22 +3,58 @@ const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-import dotenv from "dotenv";
+app.use(express.static("public"));
 
+import dotenv from "dotenv";
 dotenv.config();
 
-
-import { connection } from "./database/config.js";
+import { createPage } from "./render.js";
+const frontpage = createPage("frontpage.html", {
+    title: "Blabla | Frontpage "
+});
 
 
 app.get("/", (req, res) => {
+    res.send(frontpage);
+})
 
-    connection.query("SELECT idmytest FROM mytest", function (err, result) {
-        res.send(result);
+import mysql from "mysql2";
+
+import { connection } from "./database/config.js";
+
+/*
+const query1 = () => {
+    return new Promise((resolve, reject) => {
+        connection.query("SELECT * FROM mytest", (error, result) => {
+            if(error) {
+                return reject(error);
+            }
+            return resolve(result);
+        });
     });
+};
+
+async function blabla() {
+    const r1 = await query1();
+    const promis =[r1];
+
+    try{
+        const result = await Promise.all(promis);
+        console.log(result);
+    }catch(error) {
+        console.log(error);
+    }
+}*/
 
 
-});
+import bcrypt from "bcrypt";
+import {admin_password} from "./encryption.js";
+
+/*app.get("/", async (req, res) => {
+    
+    //await blabla();
+
+});*/
 
 
 
