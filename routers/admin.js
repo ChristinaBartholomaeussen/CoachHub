@@ -22,24 +22,17 @@ const acceptProfilesPage = createAdminPage("/admin/acceptProfiles.html", {
 
 import { isAuthorized } from "../middleware/auth.js";
 
-/* adminRouter.get("/", authenticateToken, isAuthorized, (req, res) => {
-
-    res.send(adminPage);
-}); */
-
-
-// TEST ROUTERS
-adminRouter.get("/", (req, res) => {
+adminRouter.get("/", authenticateToken,isAuthorized, (req, res) => {
     res.send(adminPage);
 });
 
-adminRouter.get("/profiles", (req, res) => {
+adminRouter.get("/profiles",authenticateToken, isAuthorized, (req, res) => {
     res.send(acceptProfilesPage);
 });
 
 
 //Bruges til fetch
-adminRouter.get("/profiles/api", async (req, res) => {
+adminRouter.get("/profiles/api",authenticateToken, isAuthorized, async (req, res) => {
 
     const status = req.query.status;    //skal være 0 eller 1
     const role = req.query.role;        //skal være 1, 2, 3
@@ -68,7 +61,7 @@ adminRouter.get("/profiles/api", async (req, res) => {
 });
 
 
-adminRouter.patch("/profiles/api/:userId", async (req, res) => {
+adminRouter.patch("/profiles/api/:userId", authenticateToken, isAuthorized, async (req, res) => {
 
     const conn = await connection.getConnection();
     

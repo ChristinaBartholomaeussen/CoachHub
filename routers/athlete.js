@@ -9,18 +9,30 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
 import { createPage } from "../render/render.js";
+import { createAthletePage } from "../render/render.js";
 
 import connection from "../database/config.js";
 
 import nodemailer from "nodemailer";
 
-
-const createAthletePage = createPage("/athlete/createAthlete.html", {
+// Hvis man ikke er logget ind -------
+const newAthlete = createPage("/athlete/createAthlete.html", {
     title: " New Athelet "
 });
 
 athleteRouter.get("/", (req, res) => {
-    res.send(createAthletePage);
+    res.send(newAthlete);
+});
+// -----------------------------------
+
+
+const athleteFrontpage = createAthletePage("/athlete/frontpage.html", {
+    title: " Min Side "
+});
+
+athleteRouter.get("/:user_id", (req, res) => {
+
+    res.send(athleteFrontpage);
 });
 
 

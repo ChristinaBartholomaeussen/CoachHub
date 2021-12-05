@@ -26,10 +26,11 @@ import adminRouter from "./routers/admin.js";
 import athleteRouter from "./routers/athlete.js";
 import {sportsRouter} from "./routers/sports.js";
 
-
 app.use(authRouter);
 app.use("/admin", adminRouter);
 app.use("/athlete", athleteRouter);
+
+
 app.use("/api/sports", sportsRouter);
 
 const frontpage = createPage("frontpage.html", {
