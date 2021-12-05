@@ -1,0 +1,61 @@
+<div class="wrapper fadeInDown">
+    <div id="formContent">
+        <form class="popdownForm" id="createAthleteForm">
+
+            <div class="row">
+                <p><b>Du er ved at oprette dig som sportsudøver</b></p>
+            </div>
+            
+
+            <div class="row">
+                <input type="text" id="firstName" class="form-control fadeInDown second" name="firstName"
+                    placeholder="Fornavn" required>
+            </div>
+
+            <div class="row">
+                <input type="text" id="lastName" class="form-control fadeInDown second" name="lastName"
+                    placeholder="Efternavn" required>
+            </div>
+
+            <div class="row">
+                <select id="gender" class="form-control fadeInDown second" required>
+                    <option value="" disabled selected>Køn</option>
+                    <option value="0">Mand</option>
+                    <option value="1">Kvinde</option>
+                </select>
+            </div>
+
+            <div class="row">
+                <input type="date" id="dateOfBirth" class="form-control fadeInDown second" name="dateOfBirth" placeholder="Føselsdato"
+                    required>
+            </div>
+
+            <div class="row">
+                <input type="email" id="email" class="form-control fadeInDown third" name="email"
+                    placeholder="email" required>
+            </div>
+
+            <div class="row">
+                <input type="password" id="password" class="form-control fadeInDown third" name="password"
+                    placeholder="password" required>
+            </div>
+
+            <div class="row">
+                <input type="password" id="password1" class="form-control fadeInDown third" name="password1"
+                    placeholder="bekræft password" required>
+            </div>
+
+            <div class="row">
+                <input type="number" id="phone" class="form-control fadeInDown third" name="phone"
+                    placeholder="Telefon +45" minlength="8" maxlength="8" required>
+            </div>
+
+            <div class="row justify-content-center">
+                <button type="submit" class="btn btnMain fadeIn fourth" style="margin-top: 2px; width: auto;">Opret</button>
+            </div>
+        
+
+        </form>
+    </div>
+</div>
+<script src="../pages/athlete/create_athlete.js"></script>

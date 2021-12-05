@@ -1,94 +1,84 @@
 import { admin_password } from "../encryption.js";
-import { connection } from "./config.js";
+import connection from "./config.js";
+
 
 (async () => {
-    
-    connection.connect((err) => {
-        if(err) {
-            return console.log("bla");
-        }
 
-        let createTables = `
-        CREATE TABLE IF NOT EXISTS admins (
-            admin_id INT PRIMARY KEY AUTO_INCREMENT,
-            email VARCHAR(250) NOT NULL,
-            password VARCHAR(100) NOT NULL,
-            UNIQUE KEY unique_email (email)
-        );
+    //await connection.execute("DROP TABLE IF EXISTS ")
 
-        CREATE TABLE IF NOT EXISTS cities (
+        const cities = `CREATE TABLE IF NOT EXISTS cities (
             city_id INT PRIMARY KEY AUTO_INCREMENT,
             city_name VARCHAR(255),
             postal_code VARCHAR(4),
             UNIQUE KEY unique_city_name (city_name),
             UNIQUE KEY unique_postal_code (postal_code)
-        );
-
-        CREATE TABLE IF NOT EXISTS address (
-            address_id INT PRIMARY KEY AUTO_INCREMENT,
-            street_name VARCHAR(250) NOT NULL,
-            number VARCHAR(3) NOT NULL,
+        );`;
+        
+        const address = `CREATE TABLE IF NOT EXISTS address(
+            address_id INT AUTO_INCREMENT PRIMARY KEY,
+            street_name VARCHAR(250),
+            number VARCHAR(3),
             apartment VARCHAR(10),
             city_id INT,
             FOREIGN KEY (city_id) REFERENCES cities(city_id)
-        );
-
-        CREATE TABLE IF NOT EXISTS roles (
+        );`;
+        
+        const roles = `CREATE TABLE IF NOT EXISTS roles (
             role_id INT PRIMARY KEY,
             role_type VARCHAR(100) NOT NULL
-        );
-
-        CREATE TABLE IF NOT EXISTS users (
-            user_id INT PRIMARY KEY AUTO_INCREMENT,
+        );`;
+        
+        const users = `CREATE TABLE IF NOT EXISTS users (
+            user_id INT AUTO_INCREMENT PRIMARY KEY,
             email VARCHAR(100) NOT NULL,
-            username VARCHAR(250) NOT NULL,
-            isEnabled BIT NOT NULL,
+            password VARCHAR(250) NOT NULL,
+            isEnabled TINYINT NOT NULL DEFAULT 0,
             role_id INT,
-            FOREIGN KEY (role_id) REFERENCES roles(role_id),
-            UNIQUE KEY unique_email (email)
-        );
-
-        CREATE TABLE IF NOT EXISTS coach_types (
+            UNIQUE KEY unique_email (email),
+            FOREIGN KEY (role_id) REFERENCES roles(role_id)
+        );`;
+        
+        const coach_types = `CREATE TABLE IF NOT EXISTS coach_types (
             coach_type_id INT PRIMARY KEY,
             coach_type VARCHAR(30) NOT NULL,
             UNIQUE KEY unique_coach_type (coach_type)
-        );
-
-        CREATE TABLE IF NOT EXISTS coachs (
+        );`;
+        
+        const coachs = `CREATE TABLE IF NOT EXISTS coachs (
             user_id INT PRIMARY KEY,
             phone_number VARCHAR(8) NOT NULL,
             coach_type_id INT,
             address_id INT,
+            FOREIGN KEY (address_id) REFERENCES address(address_id),
             FOREIGN KEY (user_id) REFERENCES users(user_id),
-            FOREIGN KEY (coach_type_id) REFERENCES coach_types(coach_type_id),
-            FOREIGN KEY (address_id) REFERENCES address(address_id)
-        );
-
-        CREATE TABLE IF NOT EXISTS private_coachs (
+            FOREIGN KEY (coach_type_id) REFERENCES coach_types(coach_type_id)
+        );`;
+        
+        const private_coachs = `CREATE TABLE IF NOT EXISTS private_coachs (
             user_id INT PRIMARY KEY,
             first_name VARCHAR(250) NOT NULL,
             last_name VARCHAR(250) NOT NULL,
             cpr_number VARCHAR(10) NOT NULL,
             FOREIGN KEY (user_id) REFERENCES users(user_id),
             UNIQUE KEY unique_cpr_number (cpr_number)
-        );
-
-        CREATE TABLE IF NOT EXISTS commercial_coachs (
+        );`
+        
+        const commercial_coachs = `CREATE TABLE IF NOT EXISTS commercial_coachs (
             user_id INT PRIMARY KEY,
             company_name VARCHAR(250) NOT NULL,
             cvr_number VARCHAR(8) NOT NULL,
             FOREIGN KEY (user_id) REFERENCES users(user_id),
             UNIQUE KEY unique_company_name (company_name),
             UNIQUE KEY unique_cvr_number (cvr_number)
-        );
-
-        CREATE TABLE IF NOT EXISTS sports (
-            sport_id INT PRIMARY KEY AUTO_INCREMENT,
-            name VARCHAR(250) NOT NULL,
-            UNIQUE KEY unique_name (name)
-        );
-
-        CREATE TABLE IF NOT EXISTS services (
+        );`;
+        
+        const sports = `CREATE TABLE IF NOT EXISTS sports (
+                sport_id INT PRIMARY KEY AUTO_INCREMENT,
+                name VARCHAR(250) NOT NULL,
+                UNIQUE KEY unique_name (name)
+            );`;
+        
+        const services = `CREATE TABLE IF NOT EXISTS services (
             service_id INT PRIMARY KEY AUTO_INCREMENT,
             title VARCHAR(250) NOT NULL,
             description VARCHAR(500) NOT NULL,
@@ -104,19 +94,18 @@ import { connection } from "./config.js";
             FOREIGN KEY (address_id) REFERENCES address(address_id),
             FOREIGN KEY (user_id) REFERENCES users(user_id),
             FOREIGN KEY (sport_id) REFERENCES sports(sport_id)
-        );
+        );`;
         
-        CREATE TABLE IF NOT EXISTS training_sessions (
+        const training_sessions = `CREATE TABLE IF NOT EXISTS training_sessions (
             session_id INT PRIMARY KEY AUTO_INCREMENT,
             date DATE NOT NULL,
             start TIME NOT NULL,
             end TIME NOT NULL,
             service_id INT,
             FOREIGN KEY (service_id) REFERENCES services(service_id)
-        );
-
-
-        CREATE TABLE IF NOT EXISTS athletes (
+        );`;
+        
+        const athletes = `CREATE TABLE IF NOT EXISTS athletes (
             first_name VARCHAR(100) NOT NULL,
             last_name VARCHAR(100) NOT NULL,
             gender VARCHAR(50) NOT NULL,
@@ -124,16 +113,18 @@ import { connection } from "./config.js";
             phone_number VARCHAR(8) NOT NULL,
             user_id INT PRIMARY KEY,
             FOREIGN KEY (user_id) REFERENCES users(user_id)
-        );
+        );`;
 
-        CREATE TABLE IF NOT EXISTS confirmation_tokens (
+        const confirmation_tokens = `CREATE TABLE IF NOT EXISTS confirmation_tokens (
             token_id INT PRIMARY KEY AUTO_INCREMENT,
             token VARCHAR(250) NOT NULL,
+            created_at INT(11) NOT NULL,
+            expires_at INT(11) NOT NULL,
             user_id INT,
-            FOREIGN KEY (user_id) REFERENCES athletes(user_id)
-        );
-
-        CREATE TABLE IF NOT EXISTS bookings (
+            FOREIGN KEY (user_id) REFERENCES users(user_id)
+        );`;
+        
+        const bookings = `CREATE TABLE IF NOT EXISTS bookings (
             booking_id INT PRIMARY KEY AUTO_INCREMENT,
             booking_date DATE NOT NULL,
             booking_start TIME NOT NULL,
@@ -142,24 +133,56 @@ import { connection } from "./config.js";
             session_id INT,
             FOREIGN KEY (user_id) REFERENCES athletes(user_id),
             FOREIGN KEY (session_id) REFERENCES training_sessions(session_id)
-        );
-        
-        INSERT INTO admins (email, password) VALUES ('c.m.bartholo@gmail.com', '${admin_password}');
+        );`;
 
-        `;
+        const chat_rooms = `CREATE TABLE IF NOT EXISTS chat_rooms (
+            room_id INT PRIMARY KEY,
+            athlete_id INT,
+            coach_id INT,
+            FOREIGN KEY (athlete_id) REFERENCES athletes(user_id),
+            FOREIGN KEY (coach_id) REFERENCES coachs(user_id)
+        );`;
 
-        //TODO: Der skal muligvis være en tabel med beskeder mellem træner og atlet
+        const chat_messages = `CREATE TABLE IF NOT EXISTS chat_messages (
+            message_id INT PRIMARY KEY,
+            timestamp DATETIME NOT NULL,
+            receiver_id INT NOT NULL,
+            sender_id INT NOT NULL,
+            text VARCHAR(1000) NOT NULL,
+            chat_room_id INT,
+            FOREIGN KEY (chat_room_id) REFERENCES chat_rooms(room_id)
+        );`
 
-        connection.query(createTables, (err) => {
-            if(err) {
-                console.log(err);
-            }
-        });
+        /*
+        await connection.execute(cities);
+        await connection.execute(address);
+        await connection.execute(roles);
+        await connection.execute(users);
+        await connection.execute(coach_types);
+        await connection.execute(coachs);
+        await connection.execute(private_coachs);
+        await connection.execute(commercial_coachs);
+        await connection.execute(sports);
+        await connection.execute(services);
+        await connection.execute(training_sessions);
 
-        connection.end((err) => {
-            if(err) {
-                console.log(err);
-            }
-        })
-    });
+        await connection.execute(athletes);
+        await connection.execute(confirmation_tokens);
+        await connection.execute(bookings);
+        await connection.execute(chat_rooms);
+        await connection.execute(chat_messages); */
+
+        //await connection.execute(`INSERT INTO sports (name) VALUES 
+        //('Fodbold'), ('Håndbold'), ('Badminton'), ('Tennis'), ('Hockey'), ('Bordtennis')`);
+
+        //await connection.execute(`INSERT INTO sports (name) VALUES 
+        //('Volleyball'), ('Basket ball'), ('Baseball'), ('Rugby'), ('Golf'), ('Amerikansk fodbold')`);
+
+
+        //await connection.execute("INSERT INTO coach_types (coach_type_id, coach_type) VALUES (1, 'Private'), (2, 'Commercial');");
+        //await connection.execute("INSERT INTO roles(role_id, role_type) VALUES (1, 'admin'), (2, 'coach'), (3, 'athlete')");
+        /*await connection.execute(`INSERT INTO users (email, password, isEnabled, role_id) 
+        VALUES ('c.m.bartholo@gmail.com', '${admin_password}', 1, 1);`);*/
+
+
 })()

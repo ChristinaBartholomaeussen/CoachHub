@@ -1,0 +1,202 @@
+main {
+    min-height: calc(100vh - 132px);
+    background: url('./sportsudstyr-paa-graesplaene-750x420.jpg'); 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+
+.navbar {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.nav-link {
+    font-size: large;
+}
+
+.navbar-brand {
+    font-size: x-large;
+}
+
+.my-navlink {
+    float: right;
+}
+
+.nav-link:hover {
+    color: var(--my-default);
+}
+
+nav, footer {
+    background: var(--my-bla1);
+    background: linear-gradient(90deg, rgba(61,220,151,1) 10%, rgba(238,238,255,1) 100%);
+}
+
+footer p {
+    margin-top: .7rem;
+    margin-bottom: .7rem;
+}
+
+
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: calc(100vh - 131px);
+}
+
+.form-control:focus {
+    border-color: var(--my-secondary);
+    -moz-box-shadow: 0 0 3px var(--my-secondary);
+    -webkit-box-shadow: 0 0 3px var(--my-secondary);
+    box-shadow: 0 0 10px var(--my-secondary);
+}
+
+.btnMain {
+    background-color: var(--my-bla1);
+}
+
+.btnMain:hover {
+    background-color: var(--my-primary);
+}
+
+.form-control {
+    display: flex;
+    justify-content: center;
+    width: 95%;
+    margin: 10px;
+}
+
+#formContent {
+    -webkit-border-radius: 10px 10px 10px 10px;
+    border-radius: 10px 10px 10px 10px;
+    background: #fff;
+    padding: 10px;
+    width: 90%;
+    height: 50%;
+    max-width: 450px;
+    position: relative;
+    -webkit-box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.3);
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+.popdownForm {
+    width: 75%;
+    display: inline-block;
+    margin: auto;
+}
+
+.fadeInDown {
+    -webkit-animation-name: fadeInDown;
+    animation-name: fadeInDown;
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+}
+
+@-webkit-keyframes fadeInDown {
+    0% {
+        opacity: 0;
+        -webkit-transform: translate3d(0, -100%, 0);
+        transform: translate3d(0, -100%, 0);
+    }
+
+    100% {
+        opacity: 1;
+        -webkit-transform: none;
+        transform: none;
+    }
+}
+
+@keyframes fadeInDown {
+    0% {
+        opacity: 0;
+        -webkit-transform: translate3d(0, -100%, 0);
+        transform: translate3d(0, -100%, 0);
+    }
+
+    100% {
+        opacity: 1;
+        -webkit-transform: none;
+        transform: none;
+    }
+}
+
+/* Simple CSS3 Fade-in Animation */
+@-webkit-keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@-moz-keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.fadeIn {
+    opacity: 0;
+    -webkit-animation: fadeIn ease-in 1;
+    -moz-animation: fadeIn ease-in 1;
+    animation: fadeIn ease-in 1;
+    -webkit-animation-fill-mode: forwards;
+    -moz-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+    -webkit-animation-duration: 1s;
+    -moz-animation-duration: 1s;
+    animation-duration: 1s;
+}
+
+.fadeIn.first {
+    -webkit-animation-delay: 0.4s;
+    -moz-animation-delay: 0.4s;
+    animation-delay: 0.4s;
+}
+
+.fadeIn.second {
+    -webkit-animation-delay: 0.6s;
+    -moz-animation-delay: 0.6s;
+    animation-delay: 0.6s;
+}
+
+.fadeIn.third {
+    -webkit-animation-delay: 0.8s;
+    -moz-animation-delay: 0.8s;
+    animation-delay: 0.8s;
+}
+
+
+:root {
+    --my-primary: rgb(46, 134, 171);
+    --my-secondary: rgb(107, 241, 120);
+    --my-bla1: rgb(61, 220, 151);
+    --my-default: rgb(25, 21, 22);
+    --my-natural: rgb(238, 238, 255);
+
+}
