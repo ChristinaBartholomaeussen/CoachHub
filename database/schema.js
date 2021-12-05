@@ -188,10 +188,10 @@ import fetch from "node-fetch";
 
     //await connection.execute("INSERT INTO coach_types (coach_type_id, coach_type) VALUES (1, 'Private'), (2, 'Commercial');");
     //await connection.execute("INSERT INTO roles(role_id, role_type) VALUES (1, 'admin'), (2, 'coach'), (3, 'athlete')");
-    /*await connection.execute(`INSERT INTO users (email, password, isEnabled, role_id) 
-    VALUES ('c.m.bartholo@gmail.com', '${admin_password}', 1, 1);`); */
+    await connection.execute(`INSERT INTO users (email, password, isEnabled, role_id) 
+    VALUES ('c.m.bartholo@gmail.com', '${admin_password}', 1, 1);`);
 
-    const response = await fetch("https://api.dataforsyningen.dk/postnumre");
+    /*const response = await fetch("https://api.dataforsyningen.dk/postnumre");
     const data = await response.json();
 
     for(const d of data) {
@@ -200,6 +200,6 @@ import fetch from "node-fetch";
         //console.log(name + " " + nr)
         await connection.execute(`INSERT INTO cities (city_name, postal_code) 
         VALUES ('${name}', '${nr}');`);
-    };
+    };*/
 
 })()

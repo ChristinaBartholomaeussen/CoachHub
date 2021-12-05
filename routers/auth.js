@@ -45,9 +45,12 @@ authRouter.post("/login", isEnabled, async (req, res) => {
 
     const [rows] = await connection.execute("SELECT * FROM users WHERE email = ?", [req.body.email]);
 
+   
+
     if (Object.entries(rows).length !== 0) {
 
         const isCorrect = await bcrypt.compare(req.body.password, rows[0]["password"]);
+
 
         if (isCorrect) {
 

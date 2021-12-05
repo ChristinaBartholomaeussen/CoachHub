@@ -21,11 +21,14 @@ function confirmLogin() {
         })
     }).then(response => {
 
+        console.log(response.status);
         switch(response.status) {
 
             case 200:
                 response.json().then(data => {
     
+                    console.log(data);
+
                     switch (data["user"]["role_id"]) {
                         case 1:
                             location.href = "/admin";
