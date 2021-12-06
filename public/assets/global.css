@@ -1,6 +1,6 @@
 main {
     min-height: calc(100vh - 132px);
-    background: url('./sportsudstyr-paa-graesplaene-750x420.jpg'); 
+    background: url('./sportsudstyr-paa-graesplaene-750x420.jpg');
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -31,7 +31,7 @@ main {
 
 nav, footer {
     background: var(--my-bla1);
-    background: linear-gradient(90deg, rgba(61,220,151,1) 10%, rgba(238,238,255,1) 100%);
+    background: linear-gradient(90deg, rgba(61, 220, 151, 1) 10%, rgba(238, 238, 255, 1) 100%);
 }
 
 footer p {
@@ -45,7 +45,7 @@ footer p {
     justify-content: center;
     align-items: center;
     text-align: center;
-    min-height: calc(100vh - 131px);
+    min-height: inherit;
 }
 
 .form-control:focus {
@@ -190,6 +190,7 @@ footer p {
     -moz-animation-delay: 0.8s;
     animation-delay: 0.8s;
 }
+
 
 
 :root {

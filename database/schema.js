@@ -63,9 +63,7 @@ import fetch from "node-fetch";
             user_id INT PRIMARY KEY,
             first_name VARCHAR(250) NOT NULL,
             last_name VARCHAR(250) NOT NULL,
-            cpr_number VARCHAR(10) NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES users(user_id),
-            UNIQUE KEY unique_cpr_number (cpr_number)
+            FOREIGN KEY (user_id) REFERENCES users(user_id)
         );`
 
     const commercial_coachs = `CREATE TABLE IF NOT EXISTS commercial_coachs (

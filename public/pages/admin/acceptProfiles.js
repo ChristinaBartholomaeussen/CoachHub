@@ -1,9 +1,10 @@
 
-const coachWrapper = document.getElementById("coach-wrapper");
+
 fetch("/admin/profiles/api?status=0&role=2")
     .then(response => response.json())
     .then(({ coachs }) => {
 
+        const coachWrapper = document.getElementById("coach-wrapper");
         
         let divId = 0;
 
@@ -91,7 +92,7 @@ fetch("/admin/profiles/api?status=0&role=2")
             acceptBtn.innerHTML = "Godkend";
             acceptDecline.append(acceptBtn);
             acceptBtn.onclick = async function () {
-                acceptProfile(coach["user_id"], coachDiv);
+                acceptProfile(coach["user_id"], coachDiv, coachWrapper);
             }
 
 
@@ -113,7 +114,7 @@ fetch("/admin/profiles/api?status=0&role=2")
 
 
 
-    function acceptProfile(userId, coachDiv) {
+    function acceptProfile(userId, coachDiv, parentDiv) {
 
         fetch(`/admin/profiles/api/${userId}`, {
             method: "PATCH", 
@@ -130,7 +131,7 @@ fetch("/admin/profiles/api?status=0&role=2")
 
                 success.find("a.toast-message").text("En mail er sendt til brugeren.");
 
-                coachWrapper.removeChild(coachDiv);
+                parentDiv.removeChild(coachDiv);
             }
         });
     }

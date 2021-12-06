@@ -25,20 +25,19 @@ import authRouter from "./routers/auth.js";
 import adminRouter from "./routers/admin.js";
 import athleteRouter from "./routers/athlete.js";
 import {sportsRouter} from "./routers/sports.js";
+import {coachRouter} from "./routers/coach.js";
+import connection from "./database/config.js";
 
 app.use(authRouter);
 app.use("/admin", adminRouter);
 app.use("/athlete", athleteRouter);
-
+app.use("/coach", coachRouter);
 
 app.use("/api/sports", sportsRouter);
 
 const frontpage = createPage("frontpage.html", {
     title: "Blabla | Frontpage "
 });
-
-
-
 
 
 

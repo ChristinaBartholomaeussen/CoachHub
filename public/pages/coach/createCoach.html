@@ -1,0 +1,127 @@
+<div class="wrapper fadeInDown">
+    <div id="formContent">
+        <form class="popdownForm" autocomplete="off">
+
+            <div class="row">
+                <h3>Opret dig som</h3>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" value="1" id="privateCoach" checked
+                            onclick="showPrivate();">
+                        <label class="form-check-label" for="privateCoach">
+                            Privat
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" value="2" id="commercialCoach"
+                            onclick="showCommercial();">
+                        <label class="form-check-label" for="commercialCoach">
+                            Virksomhed
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" id="privateCoachTemplate">
+                <div class="row">
+                    <input type="text" id="firstName" class="form-control" name="firstName" placeholder="Fornavn"
+                        required>
+                </div>
+                <div class="row">
+                    <input type="text" id="lastName" class="form-control" name="lastName" placeholder="Efternavn"
+                        required>
+                </div>
+                <div class="row input-group">
+                    <input type="text" id="streetNameP" class="form-control" name="streetNameP" placeholder="Vejnavn"
+                        required style="flex: 0 1 143px">
+
+                    <input type="number" id="houseNumberP" min="1" class="form-control" name="houseNumberP"
+                        placeholder="nr." required>
+
+                    <input type="text" id="postalCodeP" class="form-control autocomplete" name="postalCodeP"
+                        placeholder="Postnr." style="flex: 0 1 73px; text-align: center;" required>
+                </div>
+                <div class="row">
+                    <input type="email" id="emailP" class="form-control" name="emailP" placeholder="email" required>
+                </div>
+                <div class="row">
+                    <input type="number" id="phoneP" class="form-control" name="phoneP" placeholder="Telefon +45"
+                        minlength="8" maxlength="8" required>
+                </div>
+                <div class="row">
+                    <input type="password" id="passwordP" class="form-control" name="passwordP" placeholder="password"
+                        required>
+                </div>
+                <div class="row">
+                    <input type="password" id="passwordP1" class="form-control" name="passwordP1"
+                        placeholder="bekræft password" required>
+                </div>
+                <div class="row justify-content-center">
+                    <button id="submitPrivate" type="button" class="btn btnMain"
+                        style="margin-top: 2px; width: auto;">Opret</button>
+                </div>
+            </div>
+
+
+
+
+            <div class="row" id="commercialCoachTemplate" style="display: none;">
+                <div class="row">
+                    <input type="text" id="companyName" class="form-control" name="companyName" placeholder="Virksomhed"
+                        required>
+                </div>
+                <div class="row">
+                    <input type="text" id="cvr" class="form-control" name="cvr" placeholder="CVR" required>
+                </div>
+                <div class="row input-group">
+
+                    <input type="text" id="streetNameC" class="form-control" name="streetNameC" placeholder="Vejnavn"
+                        required style="flex: 0 1 143px">
+
+                    <input type="number" id="houseNumberC" min="1" class="form-control" name="houseNumberC"
+                        placeholder="nr." required>
+
+                    <input type="text" id="postalCodeC" class="form-control" name="postalCodeC" placeholder="Postnr."
+                        style="flex: 0 1 73px; text-align: center;" required>
+
+                </div>
+
+                <div class="row">
+                    <input type="email" id="emailC" class="form-control" name="emailC" placeholder="email" required>
+                </div>
+
+                <div class="row">
+                    <input type="number" id="phoneC" class="form-control" name="phoneC" placeholder="Telefon +45"
+                        minlength="8" maxlength="8" required>
+                </div>
+
+                <div class="row">
+                    <input type="password" id="passwordC" class="form-control" name="passwordC" placeholder="password"
+                        required>
+                </div>
+
+                <div class="row">
+                    <input type="password" id="passwordC1" class="form-control" name="passwordC1"
+                        placeholder="bekræft password" required>
+                </div>
+
+                <div class="row justify-content-center">
+                    <button id="submitCommercial" type="button" class="btn btnMain"
+                        style="margin-top: 2px; width: auto;">Opret</button>
+                </div>
+
+            </div>
+
+
+
+
+        </form>
+    </div>
+</div>
+<script src="../pages/coach/create_coach.js"></script>

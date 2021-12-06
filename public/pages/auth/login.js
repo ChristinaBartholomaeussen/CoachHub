@@ -1,7 +1,4 @@
 
-
-
-
 document.getElementById("formLogin").addEventListener("submit", e => {
     e.preventDefault();
     confirmLogin();
@@ -12,7 +9,7 @@ function confirmLogin() {
     fetch("/login", {
         method: "POST",
         headers: {
-            
+
             "Content-type": "application/json; charset=UTF-8"
         },
         body: JSON.stringify({
@@ -22,11 +19,11 @@ function confirmLogin() {
     }).then(response => {
 
         console.log(response.status);
-        switch(response.status) {
+        switch (response.status) {
 
             case 200:
                 response.json().then(data => {
-    
+
                     console.log(data);
 
                     switch (data["user"]["role_id"]) {
@@ -47,7 +44,7 @@ function confirmLogin() {
                 const error = toastr.error({
                     timeOut: 0
                 });
-            
+
                 error.find(".toast-message").text("Du skal bekræfte din mail før du kan logge ind.");
                 break;
 
@@ -55,7 +52,7 @@ function confirmLogin() {
                 const badCridentials = toastr.error({
                     timeOut: 0
                 });
-    
+
                 badCridentials.find(".toast-message").text("De indtastede oplysninger matcher ikke.");
                 break;
 

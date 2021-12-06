@@ -1,3 +1,5 @@
+
+
 const searchBox = document.getElementById('collapseExample')
 
 searchBox.addEventListener('show.bs.collapse', function () {
