@@ -1,8 +1,9 @@
 document.getElementById("createAthlete").onclick = function () {
-    location.href = "/athlete";
+    location.href = "/signup/athletes";
 };
 
 
 document.getElementById("createCoach").onclick = function () {
-    location.href = "/coach";
+    location.href = "/signup/coachs";
 };
+

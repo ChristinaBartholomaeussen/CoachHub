@@ -3,19 +3,17 @@ import connection from "./config.js";
 
 import fetch from "node-fetch";
 
-
-
 (async () => {
 
-    
-
-    //await connection.execute("DROP TABLE IF EXISTS ")
+    await connection.execute(`DROP TABLE IF EXISTS chat_messages, chat_rooms,
+    bookings, confirmation_tokens, athletes, training_sessions, services,
+    sports, commercial_coachs, private_coachs, coachs, coach_types, users,
+    roles, address;`);
 
     const cities = `CREATE TABLE IF NOT EXISTS cities (
             city_id INT PRIMARY KEY AUTO_INCREMENT,
             city_name VARCHAR(255),
             postal_code VARCHAR(4),
-            UNIQUE KEY unique_city_name (city_name),
             UNIQUE KEY unique_postal_code (postal_code)
         );`;
 
@@ -37,9 +35,11 @@ import fetch from "node-fetch";
             user_id INT AUTO_INCREMENT PRIMARY KEY,
             email VARCHAR(100) NOT NULL,
             password VARCHAR(250) NOT NULL,
+            token VARCHAR(255) NOT NULL,
             isEnabled TINYINT NOT NULL DEFAULT 0,
             role_id INT,
             UNIQUE KEY unique_email (email),
+            UNIQUE KEY unique_token (token),
             FOREIGN KEY (role_id) REFERENCES roles(role_id)
         );`;
 
@@ -55,7 +55,9 @@ import fetch from "node-fetch";
             coach_type_id INT,
             address_id INT,
             FOREIGN KEY (address_id) REFERENCES address(address_id),
-            FOREIGN KEY (user_id) REFERENCES users(user_id),
+            FOREIGN KEY (user_id) 
+                REFERENCES users(user_id)
+                ON DELETE CASCADE,
             FOREIGN KEY (coach_type_id) REFERENCES coach_types(coach_type_id)
         );`;
 
@@ -63,14 +65,18 @@ import fetch from "node-fetch";
             user_id INT PRIMARY KEY,
             first_name VARCHAR(250) NOT NULL,
             last_name VARCHAR(250) NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES users(user_id)
+            FOREIGN KEY (user_id) 
+                REFERENCES users(user_id) 
+                ON DELETE CASCADE
         );`
 
     const commercial_coachs = `CREATE TABLE IF NOT EXISTS commercial_coachs (
             user_id INT PRIMARY KEY,
             company_name VARCHAR(250) NOT NULL,
             cvr_number VARCHAR(8) NOT NULL,
-            FOREIGN KEY (user_id) REFERENCES users(user_id),
+            FOREIGN KEY (user_id) 
+                REFERENCES users(user_id)
+                ON DELETE CASCADE,
             UNIQUE KEY unique_company_name (company_name),
             UNIQUE KEY unique_cvr_number (cvr_number)
         );`;
@@ -115,7 +121,9 @@ import fetch from "node-fetch";
             date_of_birth DATE NOT NULL,
             phone_number VARCHAR(8) NOT NULL,
             user_id INT PRIMARY KEY,
-            FOREIGN KEY (user_id) REFERENCES users(user_id)
+            FOREIGN KEY (user_id) 
+                REFERENCES users(user_id)
+                ON DELETE CASCADE
         );`;
 
     const confirmation_tokens = `CREATE TABLE IF NOT EXISTS confirmation_tokens (
@@ -124,7 +132,9 @@ import fetch from "node-fetch";
             created_at INT(11) NOT NULL,
             expires_at INT(11) NOT NULL,
             user_id INT,
-            FOREIGN KEY (user_id) REFERENCES users(user_id)
+            FOREIGN KEY (user_id) 
+                REFERENCES users(user_id)
+                ON DELETE CASCADE
         );`;
 
     const bookings = `CREATE TABLE IF NOT EXISTS bookings (
@@ -134,7 +144,9 @@ import fetch from "node-fetch";
             booking_end TIME NOT NULL,
             user_id INT,
             session_id INT,
-            FOREIGN KEY (user_id) REFERENCES athletes(user_id),
+            FOREIGN KEY (user_id) 
+                REFERENCES athletes(user_id)
+                ON DELETE CASCADE,
             FOREIGN KEY (session_id) REFERENCES training_sessions(session_id)
         );`;
 
@@ -142,8 +154,12 @@ import fetch from "node-fetch";
             room_id INT PRIMARY KEY,
             athlete_id INT,
             coach_id INT,
-            FOREIGN KEY (athlete_id) REFERENCES athletes(user_id),
-            FOREIGN KEY (coach_id) REFERENCES coachs(user_id)
+            FOREIGN KEY (athlete_id) 
+                REFERENCES athletes(user_id)
+                ON DELETE CASCADE,
+            FOREIGN KEY (coach_id)
+                REFERENCES coachs(user_id)
+                ON DELETE CASCADE
         );`;
 
     const chat_messages = `CREATE TABLE IF NOT EXISTS chat_messages (
@@ -153,7 +169,9 @@ import fetch from "node-fetch";
             sender_id INT NOT NULL,
             text VARCHAR(1000) NOT NULL,
             chat_room_id INT,
-            FOREIGN KEY (chat_room_id) REFERENCES chat_rooms(room_id)
+            FOREIGN KEY (chat_room_id) 
+                REFERENCES chat_rooms(room_id)
+                ON DELETE CASCADE
         );`
 
     
@@ -176,18 +194,16 @@ import fetch from "node-fetch";
     await connection.execute(chat_messages); 
 
 
+    await connection.execute(`INSERT INTO sports (name) VALUES 
+    ('Fodbold'), ('Håndbold'), ('Badminton'), ('Tennis'), ('Hockey'), ('Bordtennis'), ('Volleyball'), ('Basket ball'), ('Baseball'), ('Rugby'), ('Golf'), ('Amerikansk fodbold')`);
+
+
+    await connection.execute("INSERT INTO coach_types (coach_type_id, coach_type) VALUES (1, 'Private'), (2, 'Commercial');");
+    await connection.execute("INSERT INTO roles(role_id, role_type) VALUES (1, 'admin'), (2, 'coach'), (3, 'athlete')");
     
-    //await connection.execute(`INSERT INTO sports (name) VALUES 
-    //('Fodbold'), ('Håndbold'), ('Badminton'), ('Tennis'), ('Hockey'), ('Bordtennis')`);
-
-    //await connection.execute(`INSERT INTO sports (name) VALUES 
-    //('Volleyball'), ('Basket ball'), ('Baseball'), ('Rugby'), ('Golf'), ('Amerikansk fodbold')`);
-
-
-    //await connection.execute("INSERT INTO coach_types (coach_type_id, coach_type) VALUES (1, 'Private'), (2, 'Commercial');");
-    //await connection.execute("INSERT INTO roles(role_id, role_type) VALUES (1, 'admin'), (2, 'coach'), (3, 'athlete')");
-    await connection.execute(`INSERT INTO users (email, password, isEnabled, role_id) 
-    VALUES ('c.m.bartholo@gmail.com', '${admin_password}', 1, 1);`);
+    const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    await connection.execute(`INSERT INTO users (email, password, token, isEnabled, role_id) 
+    VALUES ('c.m.bartholo@gmail.com', '${admin_password}', '${token}', 1, 1);`);
 
     /*const response = await fetch("https://api.dataforsyningen.dk/postnumre");
     const data = await response.json();
@@ -195,7 +211,6 @@ import fetch from "node-fetch";
     for(const d of data) {
         const name = d["navn"];
         const nr = d["nr"];
-        //console.log(name + " " + nr)
         await connection.execute(`INSERT INTO cities (city_name, postal_code) 
         VALUES ('${name}', '${nr}');`);
     };*/

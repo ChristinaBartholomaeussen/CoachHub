@@ -30,37 +30,35 @@
 
             <div class="row" id="privateCoachTemplate">
                 <div class="row">
-                    <input type="text" id="firstName" class="form-control" name="firstName" placeholder="Fornavn"
-                        required>
+                    <input type="text" id="firstName" class="form-control" name="firstName" placeholder="Fornavn">
                 </div>
                 <div class="row">
-                    <input type="text" id="lastName" class="form-control" name="lastName" placeholder="Efternavn"
-                        required>
+                    <input type="text" id="lastName" class="form-control" name="lastName" placeholder="Efternavn">
                 </div>
                 <div class="row input-group">
                     <input type="text" id="streetNameP" class="form-control" name="streetNameP" placeholder="Vejnavn"
-                        required style="flex: 0 1 143px">
+                        style="flex: 0 1 143px">
 
                     <input type="number" id="houseNumberP" min="1" class="form-control" name="houseNumberP"
-                        placeholder="nr." required>
+                        placeholder="nr.">
 
                     <input type="text" id="postalCodeP" class="form-control autocomplete" name="postalCodeP"
-                        placeholder="Postnr." style="flex: 0 1 73px; text-align: center;" required>
+                        placeholder="Postnr." minlength="4" maxlength="4" style="flex: 0 1 73px; text-align: center;">
                 </div>
                 <div class="row">
-                    <input type="email" id="emailP" class="form-control" name="emailP" placeholder="email" required>
+                    <input type="email" id="emailP" class="form-control" name="emailP" placeholder="email">
                 </div>
                 <div class="row">
-                    <input type="number" id="phoneP" class="form-control" name="phoneP" placeholder="Telefon +45"
-                        minlength="8" maxlength="8" required>
+                    <input type="text" id="phoneP" class="form-control" name="phoneP" placeholder="Telefon +45"
+                    mixLength="8" maxLength="8">
                 </div>
                 <div class="row">
-                    <input type="password" id="passwordP" class="form-control" name="passwordP" placeholder="password"
-                        required>
+                    <input type="password" id="passwordP" class="form-control" name="passwordP" placeholder="password">
+                        
                 </div>
                 <div class="row">
                     <input type="password" id="passwordP1" class="form-control" name="passwordP1"
-                        placeholder="bekræft password" required>
+                        placeholder="bekræft password" >
                 </div>
                 <div class="row justify-content-center">
                     <button id="submitPrivate" type="button" class="btn btnMain"
@@ -74,41 +72,41 @@
             <div class="row" id="commercialCoachTemplate" style="display: none;">
                 <div class="row">
                     <input type="text" id="companyName" class="form-control" name="companyName" placeholder="Virksomhed"
-                        required>
+                        >
                 </div>
                 <div class="row">
-                    <input type="text" id="cvr" class="form-control" name="cvr" placeholder="CVR" required>
+                    <input type="text" id="cvr" minlength="8" maxlength="8" class="form-control" name="cvr" placeholder="CVR" >
                 </div>
                 <div class="row input-group">
 
                     <input type="text" id="streetNameC" class="form-control" name="streetNameC" placeholder="Vejnavn"
-                        required style="flex: 0 1 143px">
+                         style="flex: 0 1 143px">
 
                     <input type="number" id="houseNumberC" min="1" class="form-control" name="houseNumberC"
-                        placeholder="nr." required>
+                        placeholder="nr." >
 
-                    <input type="text" id="postalCodeC" class="form-control" name="postalCodeC" placeholder="Postnr."
-                        style="flex: 0 1 73px; text-align: center;" required>
+                    <input type="text" id="postalCodeC" minlength="4" maxlength="4" class="form-control" name="postalCodeC" placeholder="Postnr."
+                        style="flex: 0 1 73px; text-align: center;" >
 
                 </div>
 
                 <div class="row">
-                    <input type="email" id="emailC" class="form-control" name="emailC" placeholder="email" required>
+                    <input type="email" id="emailC" class="form-control" name="emailC" placeholder="email">
                 </div>
 
                 <div class="row">
                     <input type="number" id="phoneC" class="form-control" name="phoneC" placeholder="Telefon +45"
-                        minlength="8" maxlength="8" required>
+                    minLength="8" maxLength="8" >
                 </div>
 
                 <div class="row">
                     <input type="password" id="passwordC" class="form-control" name="passwordC" placeholder="password"
-                        required>
+                        >
                 </div>
 
                 <div class="row">
                     <input type="password" id="passwordC1" class="form-control" name="passwordC1"
-                        placeholder="bekræft password" required>
+                        placeholder="bekræft password" >
                 </div>
 
                 <div class="row justify-content-center">

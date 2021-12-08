@@ -74,6 +74,7 @@ adminRouter.patch("/profiles/api/:userId", authenticateToken, isAuthorized, asyn
 
         await conn.commit();
 
+
     const transporter = nodemailer.createTransport({
         port: 465,
         host: "smtp.gmail.com",

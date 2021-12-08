@@ -6,16 +6,13 @@ import connection from "../database/config.js";
 
 
 function authenticateToken (req, res, next) {
-
+    
     const token = req.cookies.accessToken;
-
-    if (!token) return res.sendStatus(401);
-
+    
     try {
-
         const user = jwt.verify(token, process.env.ACCESS_TOKEN_KEY);
         req.user = user;
-        return next();
+        next();
 
     } catch {
         return res.status(403).send();
@@ -29,8 +26,7 @@ function isAuthorized (req, res, next) {
         return res.status(403).send();
     }
 
-    next();
-
+    return next();
 }
 
 async function isEnabled (req, res, next) {
@@ -40,17 +36,15 @@ async function isEnabled (req, res, next) {
     if(Object.entries(rows).length !== 0) {
 
         if(rows[0]["isEnabled"] === 0) {
-            return res.status(400).send();
+            return res.status(400).send({role: rows[0]["role_id"]});
         }
-        next();
+        else {
+            return next();
+        }
+        
     } else {
         return res.status(404).send();
     }
-
-    
-    
-
-    
 
 }
 

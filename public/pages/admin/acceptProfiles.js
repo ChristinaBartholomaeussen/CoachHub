@@ -129,7 +129,7 @@ fetch("/admin/profiles/api?status=0&role=2")
                     timeOut: 0
                 });
 
-                success.find("a.toast-message").text("En mail er sendt til brugeren.");
+                success.find(".toast-message").text("En mail er sendt til brugeren.");
 
                 parentDiv.removeChild(coachDiv);
             }

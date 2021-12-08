@@ -26,7 +26,7 @@ function validatePassword() {
 
 function createNewAthlete() {
 
-    fetch("/athlete", {
+    fetch("/athletes", {
         method: "POST",
         headers: {
             "Content-type": "application/json"
@@ -43,20 +43,19 @@ function createNewAthlete() {
         })
     }).then(response => {
 
-        if(response.status === 201) {
-            
-            const success = toastr.success({
-                timeOut: 0
-            });
-            document.getElementById("createAthleteForm").reset();
-            success.find(".toast-message").text("Tillykke, du er nu oprettet. Vi har sendt dig en mail, du skal bekræfte.");
+
+        switch(response.status) {
+
+            case 201:
+                toastr.success("Tillykke, du er nu oprettet. Vi har sendt dig en mail, du skal bekræfte.")
+            setTimeout(() => location.href = "/", 3000);
+            break;
+
+            case 409:
+                toastr.error("Den indtastede mail eksisterer allerede.")
+                break;
+
         }
 
-        else if(response.status === 400) {
-            const error = toastr.error({
-                timeOut: 0
-            })
-            error.find(".toast-message").text("Den indtastede mail eksisterer allerede.")
-        }
     });
 }

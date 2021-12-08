@@ -18,35 +18,43 @@ function confirmLogin() {
         })
     }).then(response => {
 
-        console.log(response.status);
         switch (response.status) {
 
             case 200:
                 response.json().then(data => {
-
-                    console.log(data);
-
+                    
                     switch (data["user"]["role_id"]) {
                         case 1:
                             location.href = "/admin";
                             break;
                         case 2:
-                            location.href = "/coach";
+                            location.href = "/coachs";
                             break;
                         case 3:
-                            location.href = "/athlete";
+                            location.href = `/athletes`;
                             break;
                     }
                 });
                 break;
 
             case 400:
-                const error = toastr.error({
-                    timeOut: 0
+
+                response.json().then(data => {
+
+                    switch (data["role"]) {
+                        case 2:
+                            toastr.error("En administrator har endnu ikke godkendt din profil.");
+                            break;
+
+                        case 3:
+                            toastr.error("Du skal bekræfte din profil, inden du kan logge ind.");
+                            break;
+                    }
+
                 });
 
-                error.find(".toast-message").text("Du skal bekræfte din mail før du kan logge ind.");
                 break;
+
 
             case 401:
                 const badCridentials = toastr.error({
