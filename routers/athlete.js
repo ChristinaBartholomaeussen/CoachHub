@@ -21,10 +21,8 @@ const athleteFrontpage = createAthletePage("/athlete/frontpage.html", {
 
 athleteRouter.get("/", (req, res) => {
     
-
     const tokenId = req.cookies["accessToken"]
     const user = jwt.verify(tokenId, process.env.ACCESS_TOKEN_KEY);
-    console.log("user: ", user);
     
 
     res.send(athleteFrontpage);

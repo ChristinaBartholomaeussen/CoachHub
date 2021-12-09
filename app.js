@@ -13,6 +13,7 @@ app.use('/js', express.static('./node_modules/bootstrap/dist/js'));
 app.use('/js', express.static('./node_modules/jquery/dist'));
 app.use('/css', express.static('./node_modules/bootstrap/dist/css'));
 app.use('/build', express.static('./node_modules/toastr/build'));
+app.use('/bootstrap-icons', express.static('./node_modules/bootstrap-icons'));
 
 
 
@@ -27,11 +28,14 @@ import athleteRouter from "./routers/athlete.js";
 import {sportsRouter} from "./routers/sports.js";
 import coachRouter from "./routers/coach.js";
 import connection from "./database/config.js";
+import { authenticateToken, isAuthorized } from "./middleware/auth.js";
+
+
 
 app.use(authRouter);
-app.use("/admin", adminRouter);
+app.use("/admin", authenticateToken, isAuthorized, adminRouter);
 app.use("/athletes", athleteRouter);
-app.use("/coachs", coachRouter);
+app.use("/coachs", authenticateToken, coachRouter);
 
 app.use("/api/sports", sportsRouter);
 

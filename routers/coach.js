@@ -4,7 +4,7 @@ const coachRouter = express.Router();
 import bcrypt from "bcrypt";
 
 import { createAdminPage } from "../render/render.js";
-import { createPage } from "../render/render.js";
+import { authenticateToken } from "../middleware/auth.js";
 
 
 
@@ -12,18 +12,77 @@ const coachPersonalFrontpage = createAdminPage("/coach/forside.html", {
     title: "Forside"
 });
 
+const coachServices = createAdminPage("/coach/services.html", {
+    title: " Min Side | Mine Ydelser "
+});
+
+coachRouter.get("/services", (req, res) => {
+    res.send(coachServices);
+})
+
+coachRouter.get("/api/services",  async (req, res) => {
+
+    const connect = await connection.getConnection();
+
+    try {
+
+        const [rows] = await connect.execute(`SELECT s.*, sports.name FROM services s
+        JOIN sports ON sports.sport_id = s.sport_id
+        WHERE s.user_id`, [req.user["id"]]);
+
+        connect.release();
+        return res.send({services: rows});
+
+    } catch(err) {
+        connect.rollback();
+    }
+   
+})
+
+coachRouter.post("/services",  async (req, res) => {
+    
+    const connect = await connection.getConnection();
+
+    await connect.beginTransaction();
+
+    try {
+      
+        const [rows] = await connect.execute(`SELECT * 
+        FROM users u
+        JOIN coachs c ON u.user_id = c.user_id
+        JOIN address a ON c.address_id = a.address_id
+        WHERE u.email = ?;`, [req.user["email"]]);
+
+        await connect.execute(`INSERT INTO services (title, description, price, duration, preperation_time, 
+            cancellation_notice, cancellation_fee, address_id, user_id, sport_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`, 
+            [req.body.title, req.body.description, req.body.price, req.body.duration, req.body.preperation_time, 
+                req.body.cancellation_notice, req.body.cancellation_fee,
+                rows[0]["address_id"], 
+                rows[0]["user_id"], 
+                req.body.sport_id
+            ]);
 
 
-//frontpage skal erstattes med coach token
+        await connect.commit();
+        connect.release();
+        return res.status(201).send();
+
+    }catch(err) {
+        console.log(err);
+        connect.rollback();
+        return res.status(500).send();
+    }
+
+});
+
+
 coachRouter.get("/", (req, res) => {
     res.send(coachPersonalFrontpage);
 });
 
 
-
 coachRouter.post("/", async (req, res) => {
-
-    console.log(req.body);
 
     const [rows] = await connection.execute("SELECT * FROM users WHERE email = ?", [req.body.email]);
 
@@ -52,7 +111,6 @@ coachRouter.post("/", async (req, res) => {
             const postalCode = await conn.execute("SELECT city_id FROM cities WHERE postal_code = ?;",
                 [req.body.postal_code]);
 
-                console.log("postnummer: ", postalCode[0][0]["city_id"])
 
             //Hvis postnummeret ikke findes sendes der en statuskode
             if (postalCode[0][0]["city_id"] === undefined) return res.status(400).send();

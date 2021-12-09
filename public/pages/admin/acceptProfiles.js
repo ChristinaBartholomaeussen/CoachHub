@@ -28,6 +28,7 @@ fetch("/admin/profiles/api?status=0&role=2")
             cardTitle.classList.add("card-body");
             cardTitle.style.flex = 0;
             coachDiv.append(cardTitle);
+            
             const companyPrivate = document.createElement("h5");
             companyPrivate.classList.add("card-title");
 

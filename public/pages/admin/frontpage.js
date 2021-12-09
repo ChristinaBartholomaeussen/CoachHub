@@ -3,8 +3,6 @@ fetch("/admin/profiles/api?status=0&role=2")
 .then(response => response.json())
 .then(({coachs}) => {
     
-    console.log(coachs);
-
     document.getElementById("profilesToAccept").innerHTML = `
     <a class="btn btnMain" href="/admin/profiles"><h3>${coachs.length}</h3></a>
     ` ; 
