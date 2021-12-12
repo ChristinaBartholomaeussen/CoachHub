@@ -10,6 +10,29 @@ function showCommercial() {
 
 }
 
+const termsModal = new bootstrap.Modal(document.getElementById("termsModal"), {
+    keyboard: false,
+    backdrop: 'static'
+});
+
+document.getElementById("termsBtn").addEventListener("click", () => {
+    termsModal.show();
+});
+
+
+
+document.getElementById("close").addEventListener("click", () => {
+    if (document.getElementById("confirmTerms").checked) {
+
+        document.getElementById("isConfirmed").checked = true;
+
+
+        termsModal.hide();
+    } else {
+        toastr.error("Du skal accepterer betingelserne, før du kan fortsætte.");
+    }
+});
+
 
 
 document.getElementById("submitPrivate").addEventListener("click", () => {
@@ -62,6 +85,9 @@ function validatePrivateForm() {
 
         toastr.warning("Indtast venligst en gyldig emailadresse.");
         return false;
+    } else if (!isConfirmed.checked) {
+        toastr.warning("Du skal acceptere betingelserne, før du kan fortsætte.");
+        return false;
     }
 
     return true;
@@ -99,6 +125,9 @@ function validateCommercialForm() {
     } else if (regEmail.test(document.getElementById("emailC").value) === false) {
 
         toastr.warning("Indtast venligst en gyldig emailadresse.");
+        return false;
+    } else if (!isConfirmed.checked) {
+        toastr.warning("Du skal acceptere betingelserne, før du kan fortsætte.");
         return false;
     }
 

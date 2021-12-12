@@ -9,8 +9,8 @@
             <div class="row">
                 <div class="col">
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="flexRadioDefault" value="1" id="privateCoach" checked
-                            onclick="showPrivate();">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" value="1" id="privateCoach"
+                            checked onclick="showPrivate();">
                         <label class="form-check-label" for="privateCoach">
                             Privat
                         </label>
@@ -19,8 +19,8 @@
 
                 <div class="col">
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="flexRadioDefault" value="2" id="commercialCoach"
-                            onclick="showCommercial();">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault" value="2"
+                            id="commercialCoach" onclick="showCommercial();">
                         <label class="form-check-label" for="commercialCoach">
                             Virksomhed
                         </label>
@@ -50,15 +50,15 @@
                 </div>
                 <div class="row">
                     <input type="text" id="phoneP" class="form-control" name="phoneP" placeholder="Telefon +45"
-                    mixLength="8" maxLength="8">
+                        mixLength="8" maxLength="8">
                 </div>
                 <div class="row">
                     <input type="password" id="passwordP" class="form-control" name="passwordP" placeholder="password">
-                        
+
                 </div>
                 <div class="row">
                     <input type="password" id="passwordP1" class="form-control" name="passwordP1"
-                        placeholder="bekræft password" >
+                        placeholder="bekræft password">
                 </div>
                 <div class="row justify-content-center">
                     <button id="submitPrivate" type="button" class="btn btnMain"
@@ -71,22 +71,23 @@
 
             <div class="row" id="commercialCoachTemplate" style="display: none;">
                 <div class="row">
-                    <input type="text" id="companyName" class="form-control" name="companyName" placeholder="Virksomhed"
-                        >
+                    <input type="text" id="companyName" class="form-control" name="companyName"
+                        placeholder="Virksomhed">
                 </div>
                 <div class="row">
-                    <input type="text" id="cvr" minlength="8" maxlength="8" class="form-control" name="cvr" placeholder="CVR" >
+                    <input type="text" id="cvr" minlength="8" maxlength="8" class="form-control" name="cvr"
+                        placeholder="CVR">
                 </div>
                 <div class="row input-group">
 
                     <input type="text" id="streetNameC" class="form-control" name="streetNameC" placeholder="Vejnavn"
-                         style="flex: 0 1 143px">
+                        style="flex: 0 1 143px">
 
                     <input type="number" id="houseNumberC" min="1" class="form-control" name="houseNumberC"
-                        placeholder="nr." >
+                        placeholder="nr.">
 
-                    <input type="text" id="postalCodeC" minlength="4" maxlength="4" class="form-control" name="postalCodeC" placeholder="Postnr."
-                        style="flex: 0 1 73px; text-align: center;" >
+                    <input type="text" id="postalCodeC" minlength="4" maxlength="4" class="form-control"
+                        name="postalCodeC" placeholder="Postnr." style="flex: 0 1 73px; text-align: center;">
 
                 </div>
 
@@ -96,30 +97,108 @@
 
                 <div class="row">
                     <input type="number" id="phoneC" class="form-control" name="phoneC" placeholder="Telefon +45"
-                    minLength="8" maxLength="8" >
+                        minLength="8" maxLength="8">
                 </div>
 
                 <div class="row">
-                    <input type="password" id="passwordC" class="form-control" name="passwordC" placeholder="password"
-                        >
+                    <input type="password" id="passwordC" class="form-control" name="passwordC" placeholder="password">
                 </div>
 
                 <div class="row">
                     <input type="password" id="passwordC1" class="form-control" name="passwordC1"
-                        placeholder="bekræft password" >
+                        placeholder="bekræft password">
                 </div>
 
                 <div class="row justify-content-center">
                     <button id="submitCommercial" type="button" class="btn btnMain"
                         style="margin-top: 2px; width: auto;">Opret</button>
                 </div>
-
             </div>
 
-
-
-
+            <div class="row justify-content-center">
+                <p type="button" id="termsBtn">Læs og bekræft betingelser. 
+                    <input class="form-check-input" type="checkbox" value="" id="isConfirmed" disabled>
+                </p>
+            </div>
         </form>
+
+        
     </div>
 </div>
+
+<div class="modal fade" id="termsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Betingelser</h5>
+                <i type="button" id="close" class="bi bi-x-square"></i>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec fermentum felis nibh, eget mattis
+                    odio feugiat eget. In tempor mollis rutrum. Mauris viverra ipsum vitae lacinia tempor. Fusce a nisl
+                    eleifend, tristique lacus eget, viverra enim. Sed sit amet libero turpis. Curabitur pulvinar, sapien
+                    vitae faucibus cursus, sapien sem mollis orci, at rutrum nisl sapien ut erat. Cras vehicula mi non
+                    urna sagittis, at scelerisque lacus auctor. Maecenas quis semper erat, a posuere ipsum. Quisque dui
+                    eros, consequat et metus a, feugiat suscipit felis.
+                    <br>
+                    Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nam eu
+                    volutpat erat, tempor luctus felis. Nam commodo tristique felis et ultrices. Orci varius natoque
+                    penatibus et magnis dis parturient montes, nascetur ridiculus mus. Lorem ipsum dolor sit amet,
+                    consectetur adipiscing elit. Aliquam commodo dapibus bibendum. Nulla dictum vitae mauris vitae
+                    ornare. Nam commodo sagittis nibh ut accumsan. Mauris blandit lacinia feugiat. Vestibulum aliquet
+                    purus sed massa tempor pharetra eu in sem. Curabitur id nibh mi. Proin mattis dui quam, ut mollis
+                    lorem ultricies vel. Vestibulum iaculis euismod turpis vitae molestie. Etiam et augue turpis.
+                    <br>
+                    Nullam non enim scelerisque, maximus est non, rhoncus leo. Orci varius natoque penatibus et magnis
+                    dis parturient montes, nascetur ridiculus mus. Integer faucibus libero nisl, eget pharetra diam
+                    lobortis nec. Donec egestas sagittis dui, a volutpat lacus maximus vel. Nam et turpis quis erat
+                    sollicitudin iaculis. Nulla facilisi. Nunc congue urna egestas sapien consequat vehicula. Donec sit
+                    amet viverra felis. Maecenas a efficitur erat. Maecenas lectus mauris, mollis in augue sit amet,
+                    dictum facilisis erat. Sed nec massa et lacus eleifend feugiat nec eget augue. Phasellus egestas
+                    eleifend metus sed venenatis. Nam suscipit dapibus ante, ut dapibus libero eleifend eget. Praesent
+                    tortor tellus, feugiat vel vestibulum sed, mattis eu augue. Vivamus in nunc sodales risus pulvinar
+                    aliquet. Praesent consequat ultricies vulputate.
+                    <br>
+                    Morbi tincidunt ante ac risus eleifend ullamcorper. Vivamus risus risus, euismod ac mauris quis,
+                    condimentum congue diam. Ut dapibus pulvinar ultricies. Interdum et malesuada fames ac ante ipsum
+                    primis in faucibus. Donec egestas enim nec erat accumsan, quis molestie justo pulvinar. Maecenas eu
+                    placerat tellus, sit amet fringilla diam. Fusce non justo ac ligula tempus gravida. Nunc gravida id
+                    enim sit amet tempus. Nullam scelerisque eros quis vulputate faucibus. Praesent at diam enim. Nullam
+                    nec odio in libero feugiat dignissim. Sed nisi libero, finibus a ante in, tristique lacinia mi.
+                    Quisque eget est feugiat, rhoncus elit at, auctor nisl. Curabitur sem felis, malesuada quis volutpat
+                    vitae, ultrices a tellus. Mauris dapibus diam neque, sit amet volutpat lacus luctus eget. Curabitur
+                    nisi mauris, luctus vel mi vel, blandit pellentesque sapien.
+                    <br>
+                    Phasellus sollicitudin nulla a tortor auctor tempor. Duis leo augue, aliquam sed accumsan id, semper
+                    quis nisl. Donec scelerisque ligula in metus vulputate gravida. Etiam posuere augue vel tristique
+                    pharetra. Maecenas efficitur sapien massa, ac elementum justo lobortis ornare. Etiam pretium cursus
+                    erat at facilisis. In hac habitasse platea dictumst. Sed et aliquam dui, a egestas metus. In eu
+                    nulla ut justo rutrum mollis. Phasellus auctor lorem velit, eu fringilla elit gravida a. Vestibulum
+                    ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Praesent vitae
+                    sollicitudin velit. Sed nec lectus eu tortor fermentum mollis. Interdum et malesuada fames ac ante
+                    ipsum primis in faucibus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per
+                    inceptos himenaeos.
+                    <br>
+                    Praesent tincidunt nisl vel orci aliquam, at sodales urna ullamcorper. Proin metus dolor, tincidunt
+                    vitae mi a, vestibulum ornare libero. Etiam dapibus dolor tincidunt justo mollis, nec suscipit est
+                    commodo. Nullam venenatis tortor quis commodo vehicula. Vivamus iaculis elementum ipsum sit amet
+                    finibus. Sed quam magna, ullamcorper id quam a, vestibulum condimentum ante. Phasellus varius
+                    posuere neque vel feugiat. Nunc rutrum odio sed nunc fringilla, eu vestibulum neque finibus. Cras
+                    cursus odio non ultricies laoreet. Sed aliquam ornare vehicula. Pellentesque rhoncus purus ut
+                    consequat egestas. Praesent nec malesuada metus, nec congue sem. Nunc pulvinar est vel lacinia
+                    aliquam.
+                </p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <div class="form-check form-switch">
+                    <label class="form-check-label" for="confirmTerms">Jeg har læst og accepterer betingelserne</label>
+                    <input class="form-check-input" type="checkbox" id="confirmTerms">
+                  </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="../pages/coach/create_coach.js"></script>

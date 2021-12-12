@@ -4,6 +4,12 @@ import jwt from "jsonwebtoken";
 
 import connection from "../database/config.js";
 
+import { createPage } from "../render/render.js";
+
+const notAuth = createPage("401error.html", {
+    title: "Error 401 | Unauthorized "
+});
+
 
 function authenticateToken(req, res, next) {
 
@@ -31,7 +37,7 @@ function authenticateToken(req, res, next) {
 function isAuthorized(req, res, next) {
 
     if (req.user["role_id"] !== 1) {
-        return res.status(403).send();
+        return res.status(403).send(notAuth);
     }
 
     return next();

@@ -1,12 +1,34 @@
+const termsModal = new bootstrap.Modal(document.getElementById("termsModal"), {
+    keyboard: false,
+    backdrop: 'static'
+});
 
+document.getElementById("termsBtn").addEventListener("click", () => {
+    termsModal.show();
+});
+
+
+document.getElementById("close").addEventListener("click", () => {
+    if (document.getElementById("confirmTerms").checked) {
+
+        document.getElementById("isConfirmed").checked = true;
+
+        termsModal.hide();
+    } else {
+        toastr.error("Du skal accepterer betingelserne, før du kan fortsætte.");
+    }
+});
 
 document.getElementById("createAthleteForm").addEventListener("submit", e => {
     e.preventDefault();
 
-    if(validatePassword() === true) {
+    
+    if(validatePassword() === true && document.getElementById("isConfirmed").checked) {
         createNewAthlete();
+    } else {
+        toastr.error("Du skal acceptere betingelserne, før du kan fortsætte.");
     }
-   
+
 });
 
 

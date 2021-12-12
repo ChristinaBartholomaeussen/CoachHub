@@ -33,17 +33,17 @@ import connection from "./database/config.js";
 
 
 app.use(authRouter);
-app.use("/admin", authenticateToken, adminRouter);
+app.use("/admin", authenticateToken, isAuthorized, adminRouter);
 app.use("/athletes", authenticateToken, athleteRouter);
 app.use("/coachs", authenticateToken, coachRouter);
 
 app.use("/api/sports", sportsRouter);
 
 
-
 const frontpage = createPage("frontpage.html", {
     title: "Blabla | Frontpage "
 });
+
 
 app.get("/services", async (req, res) => {
 
