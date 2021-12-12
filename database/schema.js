@@ -91,7 +91,7 @@ import fetch from "node-fetch";
             service_id INT PRIMARY KEY AUTO_INCREMENT,
             title VARCHAR(250) NOT NULL,
             description VARCHAR(500) NOT NULL,
-            price DOUBLE(10) NOT NULL,
+            price DOUBLE NOT NULL,
             duration VARCHAR(5) NOT NULL,
             preperation_time VARCHAR(5),
             cancellation_notice VARCHAR(5),
@@ -99,9 +99,15 @@ import fetch from "node-fetch";
             address_id INT,
             user_id INT,
             sport_id INT,
-            FOREIGN KEY (address_id) REFERENCES address(address_id),
-            FOREIGN KEY (user_id) REFERENCES users(user_id),
-            FOREIGN KEY (sport_id) REFERENCES sports(sport_id)
+            FOREIGN KEY (address_id) 
+                REFERENCES address(address_id)
+                ON DELETE CASCADE,
+            FOREIGN KEY (user_id) 
+                REFERENCES users(user_id)
+                ON DELETE CASCADE,
+            FOREIGN KEY (sport_id) 
+                REFERENCES sports(sport_id)
+                ON DELETE CASCADE
         );`;
 
     const training_sessions = `CREATE TABLE IF NOT EXISTS training_sessions (
@@ -110,7 +116,9 @@ import fetch from "node-fetch";
             start TIME NOT NULL,
             end TIME NOT NULL,
             service_id INT,
-            FOREIGN KEY (service_id) REFERENCES services(service_id)
+            FOREIGN KEY (service_id) 
+                REFERENCES services(service_id)
+                ON DELETE CASCADE
         );`;
 
     const athletes = `CREATE TABLE IF NOT EXISTS athletes (
@@ -137,16 +145,17 @@ import fetch from "node-fetch";
         );`;
 
     const bookings = `CREATE TABLE IF NOT EXISTS bookings (
-            booking_id INT PRIMARY KEY AUTO_INCREMENT,
             booking_date DATE NOT NULL,
             booking_start TIME NOT NULL,
             booking_end TIME NOT NULL,
-            user_id INT,
-            session_id INT,
-            FOREIGN KEY (user_id) 
+            isConfirmed TINYINT NOT NULL DEFAULT 0,
+            athlete_id INT,
+            session_id INT PRIMARY KEY,
+            FOREIGN KEY (athlete_id) 
                 REFERENCES athletes(user_id)
                 ON DELETE CASCADE,
-            FOREIGN KEY (session_id) REFERENCES training_sessions(session_id)
+            FOREIGN KEY (session_id) 
+                REFERENCES training_sessions(session_id)
         );`;
 
     const chat_rooms = `CREATE TABLE IF NOT EXISTS chat_rooms (

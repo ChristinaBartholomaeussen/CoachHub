@@ -1,5 +1,4 @@
 
-
 fetch("/api/sports")
     .then(response => response.json())
     .then(({ sports }) => {
@@ -17,12 +16,13 @@ fetch("/api/sports")
 
     });
 
+
 document.getElementById("save").addEventListener("click", () => {
 
     if (validateForm()) {
         saveService();
     }
-})
+});
 
 function validateForm() {
 
@@ -41,7 +41,6 @@ function validateForm() {
 
 
 function saveService() {
-
 
     fetch("/coachs/services", {
         method: "POST",
@@ -67,9 +66,7 @@ function saveService() {
                 toastr.success("Din træning er blevet gemt.");
                 setTimeout(() => form.reset(), 3000);
                 break;
-
         }
-
     })
 }
 
@@ -110,7 +107,7 @@ fetch("/coachs/api/services")
 
             const sport = document.createElement("li");
             sport.classList.add("list-group-item");
-            sport.innerHTML = `${service["name"]}`;
+            sport.innerHTML = `<strong>Sportsgren:</strong> ${service["name"]}`;
             cardUl.append(sport);
 
 
@@ -120,7 +117,7 @@ fetch("/coachs/api/services")
             const durationArr = service["duration"].split(':');
             let durationHour = formatHour(durationArr[0]);
             let durationMin = formatMin(durationArr[1]);
-            duration.innerHTML = `Varighed: ${durationHour} Timer ${durationMin} Minutter`;
+            duration.innerHTML = `<strong>Varighed:</strong> ${durationHour} Timer ${durationMin} Minutter`;
             cardUl.append(duration);
 
 
@@ -129,12 +126,12 @@ fetch("/coachs/api/services")
             const prepArr = service["preperation_time"].split(':');
             let prepHour = formatHour(prepArr[0]);
             let prepMin = formatMin(prepArr[1]);
-            prepTime.innerHTML = `Forbedredelsestid: ${prepHour} Timer ${prepMin} Minutter`;
+            prepTime.innerHTML = `<strong>Forbedredelsestid:</strong> ${prepHour} Timer ${prepMin} Minutter`;
             cardUl.append(prepTime);
 
             const price = document.createElement("li");
             price.classList.add("list-group-item");
-            price.innerHTML = `Pris DKK: ${service["price"]}`;
+            price.innerHTML = `<strong>Pris DKK:</strong> ${service["price"]}`;
             cardUl.append(price);
 
 
@@ -144,13 +141,13 @@ fetch("/coachs/api/services")
             const cancelNoticeArr = service["cancellation_notice"].split(':');
             let cancelHour = formatHour(cancelNoticeArr[0]);
             let cancelMin = formatMin(cancelNoticeArr[1]);
-            cancelTime.innerHTML = `Afbestillingsvarsel: ${cancelHour} Timer ${cancelMin} Minutter`;
+            cancelTime.innerHTML = `<strong>Afbestillingsvarsel: </strong> ${cancelHour} Timer ${cancelMin} Minutter`;
             cardUl.append(cancelTime);
 
 
             const cancelFee = document.createElement("li");
             cancelFee.classList.add("list-group-item");
-            cancelFee.innerHTML = `Afbestillingsgebyr DKK: ${service["cancellation_fee"]}`;
+            cancelFee.innerHTML = `<strong>Afbestillingsgebyr DKK:</strong> ${service["cancellation_fee"]}`;
             cardUl.append(cancelFee);
 
 
@@ -160,35 +157,43 @@ fetch("/coachs/api/services")
 
             const desciption = document.createElement("p");
             desciption.classList.add("card-text");
-            desciption.innerHTML = `${service["description"]}`;
+            desciption.innerHTML = `<strong>Beskrivelse: </strong> <br>
+            ${service["description"]}`;
             cardBody2.append(desciption);
 
             const buttonDiv = document.createElement("div");
-            buttonDiv.classList.add("card-footer");
-            buttonDiv.classList.add("d-flex");
-            buttonDiv.classList.add("justify-content-center");
+            buttonDiv.classList.add("card-footer", "d-flex", "justify-content-center");
             cardDiv.append(buttonDiv);
 
-            const deleteBtn = document.createElement("button");
-            deleteBtn.classList.add("btn");
-            deleteBtn.classList.add("btn-danger");
-            deleteBtn.innerHTML = "Slet";
-            buttonDiv.append(deleteBtn);
-            buttonDiv.onclick = () => {
-                serviceWrapper.removeChild(cardDiv); //Den fjerner den specfikke div, inden siden bliver loadet igen
-            };
+            const h2 = document.createElement("h2");
+            const deleteBtn = document.createElement("i");
+            deleteBtn.classList.add("bi");
+            deleteBtn.classList.add("bi-trash-fill");
+            deleteBtn.setAttribute("type", "button");
+            deleteBtn.addEventListener("click", () => {
+                const confirmDelete = confirm("Du er ved at slette en træning.");
+                if (confirmDelete) {
+                    deleteService(service["service_id"], cardDiv);
 
-        })
-    })
+                }
+            });
+            h2.append(deleteBtn);
+            buttonDiv.append(h2);
+        });
+    });
 
 
-
+/**
+ * Funktion, der formatterer timer
+ * @param {} hourToFormat 
+ * @returns 
+ */
 
 function formatHour(hourToFormat) {
 
     let formatted;
 
-    if(hourToFormat.charAt(0) === '0') {
+    if (hourToFormat.charAt(0) === '0') {
         formatted = hourToFormat.replace("0", "");
 
     } else {
@@ -198,12 +203,16 @@ function formatHour(hourToFormat) {
     return formatted;
 }
 
-
+/**
+ * Funktion, der formattere minutter
+ * @param {} minToFormat 
+ * @returns 
+ */
 function formatMin(minToFormat) {
 
     let formatted;
 
-    if(minToFormat.charAt(0) === '0') {
+    if (minToFormat.charAt(0) === '0') {
         formatted = minToFormat.replace("0", "");
 
     } else {
@@ -211,4 +220,32 @@ function formatMin(minToFormat) {
     }
 
     return formatted;
+}
+/**
+ * Funktion, der fetcher DELETE request med det specfikke ID
+ * @param {*} serviceId 
+ */
+function deleteService(serviceId, cardDiv) {
+
+    fetch(`/coachs/services/${serviceId}`, {
+        method: "DELETE",
+        headers: {
+            "Content-type": "application/json; charset=UTF-8"
+        }
+    }).then(response => {
+
+        const serviceWrapper = document.getElementById("service-wrapper");
+
+        switch (response.status) {
+
+            case 200:
+                toastr.success("Fuldført");
+                serviceWrapper.removeChild(cardDiv);
+                break;
+
+            case 500:
+                toastr.error("Der skete en fejl. Prøv igen senere.");
+                break;
+        }
+    });
 }

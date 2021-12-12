@@ -1,6 +1,6 @@
 main {
     min-height: calc(100vh - 132px);
-    background: url('./sportsudstyr-paa-graesplaene-750x420.jpg');
+    background: url('./MediaFile.jpg') no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;

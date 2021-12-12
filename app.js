@@ -27,22 +27,40 @@ import adminRouter from "./routers/admin.js";
 import athleteRouter from "./routers/athlete.js";
 import {sportsRouter} from "./routers/sports.js";
 import coachRouter from "./routers/coach.js";
-import connection from "./database/config.js";
 import { authenticateToken, isAuthorized } from "./middleware/auth.js";
+import connection from "./database/config.js";
 
 
 
 app.use(authRouter);
-app.use("/admin", authenticateToken, isAuthorized, adminRouter);
+app.use("/admin", authenticateToken, adminRouter);
 app.use("/athletes", athleteRouter);
 app.use("/coachs", authenticateToken, coachRouter);
 
 app.use("/api/sports", sportsRouter);
 
+
+
 const frontpage = createPage("frontpage.html", {
     title: "Blabla | Frontpage "
 });
 
+app.get("/services", async (req, res) => {
+
+    const sport = req.query.sport;
+
+    const connect = await connection.getConnection();
+
+    const [rows] = await connect.execute(`SELECT s.service_id, c.city_name, c.city_id, sp.name, s.title, s.description 
+    FROM cities c
+    JOIN address a ON c.city_id = a.city_id
+    JOIN services s ON a.address_id = s.address_id
+    JOIN sports sp ON s.sport_id = sp.sport_id
+    WHERE sp.name = ?`, [sport]);
+
+    res.send({services: rows})
+
+})
 
 
 app.get("/", (req, res) => {
