@@ -44,7 +44,6 @@ authRouter.post("/login", isEnabled, async (req, res) => {
 
     const [rows] = await connection.execute("SELECT * FROM users WHERE email = ?", [req.body.email]);
 
-    console.log(rows)
 
     if (Object.entries(rows).length !== 0) {
 
@@ -61,6 +60,8 @@ authRouter.post("/login", isEnabled, async (req, res) => {
             };
 
             const token = jwt.sign(user, process.env.ACCESS_TOKEN_KEY);
+
+            console.log(token);
 
         
             return res.cookie('accessToken', token).status(200).send({user});

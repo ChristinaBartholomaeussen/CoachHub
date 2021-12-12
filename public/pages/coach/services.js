@@ -79,12 +79,18 @@ fetch("/coachs/api/services")
 
         services.map(service => {
 
+            const col = document.createElement("div");
+            col.id = service["service_id"];
+            col.classList.add("col-sm-3", "d-flex");
+            col.id = service["service_id"];
+            serviceWrapper.append(col);
+
             const cardDiv = document.createElement("div");
-            cardDiv.id = service["service_id"];
+            //cardDiv.id = service["service_id"];
             cardDiv.classList.add("card");
             cardDiv.style.width = "18rem";
             cardDiv.style.margin = "10px";
-            serviceWrapper.append(cardDiv);
+            col.append(cardDiv);
 
             const cardHeader = document.createElement("div");
             cardHeader.classList.add("card-header");
