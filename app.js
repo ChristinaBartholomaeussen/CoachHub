@@ -34,7 +34,7 @@ import connection from "./database/config.js";
 
 app.use(authRouter);
 app.use("/admin", authenticateToken, adminRouter);
-app.use("/athletes", athleteRouter);
+app.use("/athletes", authenticateToken, athleteRouter);
 app.use("/coachs", authenticateToken, coachRouter);
 
 app.use("/api/sports", sportsRouter);
