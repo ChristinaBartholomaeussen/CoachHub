@@ -187,6 +187,9 @@ function getServiceById(serviceId) {
 
 function getAvaibleTrainingSessions(e) {
 
+    document.getElementById("avaiableSessions-wrapper").innerText = "";
+
+
     readMoreModal.hide();
     avaiableSessions.show();
 
@@ -217,9 +220,7 @@ function getAvaibleTrainingSessions(e) {
                         const confirmBox = confirm("Du er at booke denne tid. Bekræft venligst.");
 
                         if (confirmBox) {
-
                             addBooking(session["session_id"], session["date"], session["start"], session["end"]);
-
                         }
                     })
                     li.append(bookBtn);
