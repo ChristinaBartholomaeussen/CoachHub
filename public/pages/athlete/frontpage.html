@@ -1,1 +1,98 @@
-<h1>Hello</h1>
+<div class="container">
+
+    <div class="d-flex row" style="padding-top: 5px;">
+
+        <div class="col p-3">
+
+            <div class="p-3 border bg-light" style="border-radius: 12px; display: block; align-items: center;">
+
+                <div class="text-center">
+                    <h1>Find din nye træner her!</h1>
+                </div>
+
+                <div style="display: flex; align-items: center;">
+                    <div class="input-group rounded">
+                        <input id="searchValue" type="search" class="form-control rounded" placeholder="Search"
+                            aria-label="Search" aria-describedby="search-addon" />
+                    </div>
+
+                    <h3><i type="button" id="btnSearch" class="bi bi-search"></i></h3>
+                </div>
+
+                <div class="collapse" id="searchArea" style="margin: 13px">
+                    <h5 class="card-title" id="header"></h5>
+                    <div class="card card-body mb-3" id="city-wrapper">
+
+                    </div>
+
+                    <div class="row d-flex" style="--bs-gutter-x: 0;" id="service-wrapper">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- Read more modal -->
+<div class="modal fade" id="readMoreModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="card">
+                <div class="card-header">
+                    <h3 id="coachNameCompanyname">Hello</h3>
+                </div>
+
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Kontakt Info:</h6>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item" id="phone"></li>
+                        <li class="list-group-item" id="email"></li>
+                    </ul>
+                </div>
+
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Træningsoplysninger:</h6>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item" id="price"></li>
+                        <li class="list-group-item" id="duration"></li>
+                        <li class="list-group-item" id="address"></li>
+                        <li class="list-group-item" id="cancellationNotice"></li>
+                        <li class="list-group-item" id="cancellationFee"></li>
+                    </ul>
+                </div>
+
+                <div class="card-footer d-flex justify-content-center">
+                    <button class="btn btnMain" id="avaiableSessionsBtn">Se ledige tider</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Read more modal -->
+<div class="modal fade" id="avaiableSessions" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="card" id="sessionCard">
+                <div class="card-header">
+                    <h3 id="coachNameCompanyname">Ledige tider</h3>
+                </div>
+
+                <div class="card-body">
+                    <ul class="list-group list-group-flush" id="avaiableSessions-wrapper">
+
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="../pages/frontpage.js"></script>

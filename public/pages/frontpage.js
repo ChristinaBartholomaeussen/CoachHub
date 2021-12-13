@@ -1,4 +1,9 @@
 
+//const socket = io();
+
+const readMoreModal = new bootstrap.Modal(document.getElementById("readMoreModal"));
+const avaiableSessions = new bootstrap.Modal(document.getElementById("avaiableSessions"));
+
 const collapseDiv = document.getElementById("searchArea")
 
 var bsCollapse = new bootstrap.Collapse(collapseDiv, {
@@ -75,8 +80,6 @@ function search() {
                 searchBtn.removeEventListener("click", search);
 
             });
-
-
     }
 }
 
@@ -92,11 +95,10 @@ function showServices(services) {
         col.id = service["service_id"];
         coachWrapper.append(col);
 
-        
+
         const serviceCard = document.createElement("div");
         serviceCard.classList.add("card", "mb-2");
         serviceCard.style.width = "18rem";
-        //serviceCard.id = service["service_id"];
         col.append(serviceCard);
 
         const cardBody = document.createElement("div");
@@ -127,12 +129,14 @@ function showServices(services) {
         const btnIcon = document.createElement("i");
         btnIcon.classList.add("bi", "bi-eyeglasses")
         btnIcon.setAttribute("type", "button");
+        btnIcon.addEventListener("click", () => {
+            getServiceById(service["service_id"]);
+        })
         lookBtn.append(btnIcon);
 
     });
 
 }
-
 
 function removeService(services) {
 
@@ -141,4 +145,130 @@ function removeService(services) {
     services.forEach(service => {
         coachWrapper.removeChild(document.getElementById(service["service_id"]));
     });
+};
+
+
+function getServiceById(serviceId) {
+
+    fetch(`/services/${serviceId}`)
+        .then(response => response.json())
+        .then(({ services }) => {
+
+            const avaiableSessionsBtn = document.getElementById("avaiableSessionsBtn");
+
+            services.map(service => {
+
+                if (!service["first_name"]) {
+                    document.getElementById("coachNameCompanyname").innerText =
+                        `${service["company_name"]} cvr: ${service["cvr_number"]}`
+                } else if (!service["company_name"]) {
+                    document.getElementById("coachNameCompanyname").innerText =
+                        `${service["first_name"]} ${service["last_name"]}`;
+                }
+
+                document.getElementById("phone").innerText = `Tlf: ${service["phone_number"]}`;
+                document.getElementById("email").innerText = `Email: ${service["email"]}`;
+                document.getElementById("price").innerText = `Pris: ${service["price"]} DKK`;
+                document.getElementById("duration").innerText = `Varighed: ${service["duration"]} Timer`;
+                document.getElementById("address").innerText = `Addresse: ${service["street_name"]} ${service["number"]} ${service["postal_code"]} ${service["city_name"]}`;
+                document.getElementById("cancellationNotice").innerText = `Afbestillingsvarsel: ${service["cancellation_notice"]} Timer`;
+                document.getElementById("cancellationFee").innerText = `Afbestillingsgebyr: ${service["cancellation_fee"]} DKK`;
+
+
+                avaiableSessionsBtn.addEventListener("click", getAvaibleTrainingSessions, false);
+                avaiableSessionsBtn.serviceId = service["service_id"];
+            });
+
+        });
+
+    readMoreModal.show();
 }
+
+
+function getAvaibleTrainingSessions(e) {
+
+    readMoreModal.hide();
+    avaiableSessions.show();
+
+    fetch(`/training_session/?service=${e.currentTarget.serviceId}`)
+        .then(response => response.json())
+        .then(({ sessions }) => {
+
+            const avaiableSessionsWrapper = document.getElementById("avaiableSessions-wrapper");
+
+            if (Object.entries(sessions).length !== 0) {
+
+                sessions.map(session => {
+
+                    const li = document.createElement("li");
+                    li.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center");
+
+                    var sessionDate = new Date(session["date"]);
+
+                    year = sessionDate.getFullYear();
+                    month = (sessionDate.getMonth() + 1).toString().padStart(2, "0");
+                    day = sessionDate.getDate().toString().padStart(2, "0");
+
+                    li.innerText = `Dato: ${day}-${month}-${year} Tidspunkt: ${session["start"]}-${session["end"]}`;
+                    const bookBtn = document.createElement("button");
+                    bookBtn.classList.add("btn", "btnMain");
+                    bookBtn.innerText = "Book denne tid";
+                    bookBtn.addEventListener("click", () => {
+                        const confirmBox = confirm("Du er at booke denne tid. Bekræft venligst.");
+
+                        if (confirmBox) {
+
+                            addBooking(session["session_id"], session["date"], session["start"], session["end"]);
+
+                        }
+                    })
+                    li.append(bookBtn);
+                    avaiableSessionsWrapper.append(li);
+
+                })
+            } else {
+                const li = document.createElement("li");
+                li.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center");
+                li.innerText = "Der er desværre ingen ledige tider."
+                avaiableSessionsWrapper.append(li);
+            }
+        });
+}
+
+function addBooking(sessionId, date, start, end) {
+
+    fetch("/booking", {
+        method: "POST",
+        headers: {
+            "Content-type": "application/json; charset=UTF-8"
+        },
+        body: JSON.stringify({
+            booking_date: date,
+            booking_start: start,
+            booking_end: end,
+            session_id: sessionId
+        })
+    }).then(response => {
+
+        switch (response.status) {
+
+            case 200:
+                toastr.success("Din træner skal godkend din anmodning, før du kan se din booking.");
+                setTimeout(() => avaiableSessions.hide, 3000);
+
+            case 403:
+                toastr.warning("Du skal logge ind, før du kan lave en booking.");
+                setTimeout(() => location.href = "/login", 3000);
+                break;
+
+            case 500:
+                toastr.error("Denne tid afventer bekræftelse.");
+                break;
+
+
+        }
+
+    })
+
+}
+

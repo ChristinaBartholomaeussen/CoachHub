@@ -23,7 +23,7 @@ function confirmLogin() {
             case 200:
                 response.json().then(data => {
                     
-                    switch (data["user"]["role_id"]) {
+                    switch (data["role"]) {
                         case 1:
                             location.href = "/admin";
                             break;
@@ -71,7 +71,6 @@ function confirmLogin() {
                 document.getElementById("formLogin").reset();
                 notFound.find(".toast-message").text("Du skal oprette dig, før du kan logge ind.");
                 break;
-
 
         }
     });

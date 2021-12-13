@@ -115,6 +115,7 @@ import fetch from "node-fetch";
             date DATE NOT NULL,
             start TIME NOT NULL,
             end TIME NOT NULL,
+            isConfirmed TINYINT NOT NULL DEFAULT 0,
             service_id INT,
             FOREIGN KEY (service_id) 
                 REFERENCES services(service_id)

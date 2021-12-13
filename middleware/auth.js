@@ -11,28 +11,39 @@ const notAuth = createPage("401error.html", {
 });
 
 
+async function tokenIsValid(req, res, next) {
+
+    jwt.verify(req.query.token, process.env.CONFIRMATION_TOKEN_KEY, function(err) {
+        if(err) {
+            return res.status(410).send({message: "token er udløbet"});
+        }
+        else {
+            next();
+        }
+    })
+}
+
+
 function authenticateToken(req, res, next) {
 
     const token = req.cookies.accessToken;
 
-    if (!token) {
-        return res.status(403).redirect("/login");
+    if (!token || token === undefined) {
+        
+        return res.status(403).send();
         
     } else {
         try {
+            
             const user = jwt.verify(token, process.env.ACCESS_TOKEN_KEY);
             req.user = user;
-            next();
+            return next();
 
         } catch {
-            return res.status(403).redirect("/login");
+            return res.status(500).redirect("/");
         }
-
     }
-
-
-
-}
+};
 
 function isAuthorized(req, res, next) {
 
@@ -41,6 +52,21 @@ function isAuthorized(req, res, next) {
     }
 
     return next();
+};
+
+async function isValidEmail(req, res, next) {
+
+    const [rows] = await connection.execute(`SELECT * FROM users WHERE email = ?`, [req.body.email]);
+
+    if((Object.entries(rows).length === 0) || (rows[0]["user_id"] === req.user["id"] )) {
+        console.log("email er valid");
+        return next();
+    } else {
+        console.log("email not valid");
+        return res.status(409).send();
+    }
+
+
 }
 
 async function isEnabled(req, res, next) {
@@ -62,7 +88,7 @@ async function isEnabled(req, res, next) {
 
 }
 
-export { authenticateToken, isAuthorized, isEnabled };
+export { authenticateToken, isAuthorized, isEnabled, tokenIsValid, isValidEmail };
 
 
 

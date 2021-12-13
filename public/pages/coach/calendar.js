@@ -1,3 +1,4 @@
+
 const mymodal = new bootstrap.Modal(document.getElementById("newSession"), {
     keyboard: false,
     backdrop: 'static'
@@ -21,6 +22,8 @@ document.getElementById("save").addEventListener("click", () => {
 
 });
 
+const pendingBookingsModal = new bootstrap.Modal(document.getElementById("pendingBookingsModal"));
+
 
 fetch("/coachs/api/training-session")
     .then(response => response.json())
@@ -31,14 +34,8 @@ fetch("/coachs/api/training-session")
 
         training_sesssions.map(session => {
 
-            console.log(session)
-
             const item = document.createElement("li");
-            item.classList.add("list-group-item");
-            item.classList.add("d-flex");
-            item.classList.add("align-items-center");
-            item.classList.add("justify-content-between");
-            item.classList.add("mt-1");
+            item.classList.add("list-group-item", "d-flex", "align-items-center", "justify-content-between", "mt-1");
 
             const dateString = session["date"].split('T');
             const dateStringArr = dateString[0].split('-');
@@ -166,6 +163,174 @@ function deleteSession(sessionId, cardDiv) {
                 break;
         }
     })
+}
+
+document.getElementById("pendingBookingsCountBtn").addEventListener("click", () => {
+    pendingBookingsModal.show();
+})
+
+fetch("/coachs/api/bookings")
+    .then(response => response.json())
+    .then(({ bookings }) => {
+
+        
+        const bookingWrapper = document.getElementById("booking-wrapper");
+
+        const pendingBookingsCount = document.getElementById("pendingBookingsCountBtn");
+    
+
+        let count = 0;
+        bookings.map(booking => {
+
+            if (booking["isConfirmed"] === 0) {
+                count += 1;
+                const pendingBookingsWrapper = document.getElementById("pending-bookings-modal-list");
+
+                const li = document.createElement("li");
+                li.id = booking["session_id"];
+                li.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center");
+
+                var bookingDate = new Date(booking["booking_date"]);
+
+                year = bookingDate.getFullYear();
+                month = (bookingDate.getMonth() + 1).toString().padStart(2, "0");
+                day = bookingDate.getDate().toString().padStart(2, "0");
+
+                li.innerHTML = `<b>Dato:</b> ${day}-${month}-${year} <br>  
+                <b>Tidsrum</b> ${booking["booking_start"]}-${booking["booking_end"]} <br>
+                <b>Service:</b> ${booking["title"]}`;
+
+                const acceptBtn = document.createElement("button");
+                acceptBtn.classList.add("btn", "btn-success");
+                const acceptIcon = document.createElement("i");
+                acceptIcon.classList.add("bi", "bi-check-lg");
+                acceptBtn.append(acceptIcon);
+                acceptBtn.addEventListener("click", acceptBooking);
+                acceptBtn.bookingId = booking["session_id"];
+                acceptBtn.email = booking["email"];
+                acceptBtn.firstName = booking["first_name"];
+                acceptBtn.lastName = booking["last_name"];
+                acceptBtn.gender = booking["gender"];
+                acceptBtn.phone = booking["phone_number"];
+                li.append(acceptBtn);
+
+
+                const rejectBtn = document.createElement("button");
+                rejectBtn.classList.add("btn", "btn-danger");
+                const rejectIcon = document.createElement("i");
+                rejectIcon.classList.add("bi", "bi-x-lg");
+                rejectBtn.append(rejectIcon);
+                rejectBtn.addEventListener("click", rejectBooking, false);
+                rejectBtn.bookingId = booking["session_id"];
+
+                li.append(rejectBtn);
+
+                pendingBookingsWrapper.append(li);
+
+
+
+            } else {
+
+                const li = document.createElement("li");
+                li.classList.add("list-group-item");
+
+                var bookingDate = new Date(booking["booking_date"]);
+
+                year = bookingDate.getFullYear();
+                month = (bookingDate.getMonth() + 1).toString().padStart(2, "0");
+                day = bookingDate.getDate().toString().padStart(2, "0");
+
+                li.innerHTML = `<b>Dato:</b> ${day}-${month}-${year} <br>  
+                <b>Tidsrum</b> ${booking["booking_start"]}-${booking["booking_end"]} <br>
+                <b>Service:</b> ${booking["title"]}`;
+
+                bookingWrapper.append(li);
+
+            }
+
+            pendingBookingsCount.innerText = count;
+
+        });
+
+
+    });
+
+
+function acceptBooking(e) {
+    const child = e.currentTarget.bookingId;
+    let genderValue;
+
+    if (e.currentTarget.gender === "1") {
+        genderValue = "Kvinde"
+    } else {
+        genderValue = "Mand"
+    }
+
+    fetch(`/coachs/bookings/${e.currentTarget.bookingId}`, {
+        method: "PATCH",
+        headers: {
+            "Content-type": "application/json"
+        },
+        body: JSON.stringify({
+            email: e.currentTarget.email,
+            first_name: e.currentTarget.firstName,
+            last_name: e.currentTarget.lastName,
+            gender: genderValue,
+            phone_number: e.currentTarget.phone
+        })
+    }).then(response => {
+
+        const pendingBookingsWrapper = document.getElementById("pending-bookings-modal-list");
+
+        switch (response.status) {
+            case 200:
+                toastr.success("Bookingen er bekræftet. Du modtager en mail med oplysningerne på sportsudøveren.")
+                const li = document.getElementById(child);
+                pendingBookingsWrapper.removeChild(li);
+                pendingBookingsModal.hide();
+                setTimeout(() => {
+                    location.reload(true);
+                },3000);
+                
+                break;
+
+            case 500:
+                toastr.error("Der skete en fejl. Prøv igen senere.");
+                break;
+        }
+
+    })
+
+
 
 }
+
+function rejectBooking(e) {
+
+    const child = e.currentTarget.bookingId;
+
+    fetch(`/coachs/booking/${e.currentTarget.bookingId}`, {
+        method: "PATCH",
+        headers: {
+            "Content-type": "application/json"
+        }
+    }).then(response => {
+
+        const pendingBookingsWrapper = document.getElementById("pending-bookings-modal-list");
+
+        switch (response.status) {
+            case 200:
+                const li = document.getElementById(child);
+                pendingBookingsWrapper.removeChild(li);
+                break;
+
+            case 500:
+                toastr.error("Der skete en fejl. Prøv igen senere.");
+                break;
+        }
+
+    })
+
+}
+
 
