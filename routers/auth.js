@@ -1,35 +1,25 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import nodemailer from "nodemailer";
-
-import bcrypt from "bcrypt";
-
 import express from "express";
 const authRouter = express.Router();
 
+import nodemailer from "nodemailer";
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import connection from "../database/config.js";
 
-import { authenticateToken, tokenIsValid, isEnabled, isValidEmail, usernameIsValid } from "../middleware/auth.js";
-
+import {connectionPool} from "../database/config.js";
+import { authenticateToken, tokenIsValid, isEnabled, isValidEmail, usernameIsValid, isAthlete } from "../middleware/auth.js";
 import { createAdminPage, createAthletePage, createCoachPage, createPage } from "../render/render.js";
 
-
+// PAGES
 const loginPage = createPage("./auth/login.html", {
     title: "Login"
 });
 
-
 const createUserPage = createPage("./auth/create_user.html", {
     title: "Opret Ny Bruger"
 });
-
-
-authRouter.get("/login", (req, res) => {
-    res.send(loginPage);
-});
-
 
 const forumPageAthlete = createAthletePage("./auth/forum.html", {
     tile: "Forum"
@@ -43,23 +33,22 @@ const forumPageAdmin = createAdminPage("./auth/forum.html", {
     tile: "Forum"
 });
 
-
-
-authRouter.get("/forum", authenticateToken, (req, res) => {
-
-    if (req.user["role_id"] === 1) {
-        return res.send(forumPageAdmin);
-    } else if (req.user["role_id"] === 2) {
-        return res.send(forumPageCoach);
-    } else {
-        return res.send(forumPageAthlete);
-    }
+const newAthlete = createPage("/athlete/createAthlete.html", {
+    title: " New Athelet "
 });
 
+const newCoach = createPage("/coach/createCoach.html", {
+    title: " New Coach "
+});
+
+//ROUTERS
+authRouter.get("/login", (req, res) => {
+    res.send(loginPage);
+});
 
 authRouter.post("/login", isEnabled, async (req, res) => {
 
-    const [rows] = await connection.execute("SELECT * FROM users WHERE email = ?", [req.body.email]);
+    const [rows] = await connectionPool.execute("SELECT * FROM users WHERE email = ?", [req.body.email]);
 
     if (Object.entries(rows).length !== 0) {
 
@@ -92,29 +81,21 @@ authRouter.get("/signup", (req, res) => {
     res.send(createUserPage);
 });
 
-const newAthlete = createPage("/athlete/createAthlete.html", {
-    title: " New Athelet "
-});
-
-
 authRouter.get("/signup/athletes", (req, res) => {
     res.send(newAthlete);
-});
-
-const newCoach = createPage("/coach/createCoach.html", {
-    title: " New Coach "
 });
 
 authRouter.get("/signup/coachs", (req, res) => {
     res.send(newCoach);
 });
 
+
 authRouter.post("/coachs", isValidEmail, usernameIsValid, async (req, res) => {
 
     const { email, password, username, postal_code, street_name, number, phone, coach_type,
         first_name, last_name, company_name, cvr_number } = req.body;
 
-    const connect = await connection.getConnection();
+    const connect = await connectionPool.getConnection();
 
     await connect.beginTransaction();
 
@@ -165,7 +146,7 @@ authRouter.post("/coachs", isValidEmail, usernameIsValid, async (req, res) => {
 
 authRouter.post("/athletes", isValidEmail, usernameIsValid, async (req, res) => {
 
-    const connect = await connection.getConnection();
+    const connect = await connectionPool.getConnection();
     await connect.beginTransaction();
 
     const { email, first_name, last_name, username, password, gender, date_of_birth, phone } = req.body;
@@ -198,8 +179,8 @@ authRouter.post("/athletes", isValidEmail, usernameIsValid, async (req, res) => 
             secure: true
         });
 
-        const link = `http://localhost:8080/confirm?token=${token}`; // development link
-        //const link = `https://christina-nodejs-eksamen.herokuapp.com/confirm?token=${token}`; //deploy link
+        //const link = `http://localhost:8080/confirm?token=${token}`; // development link
+        const link = `https://christina-nodejs-eksamen.herokuapp.com/confirm?token=${token}`; //deploy link
 
         const mailOption = {
             from: process.env.NODEMAILER_USER,
@@ -225,10 +206,20 @@ authRouter.post("/athletes", isValidEmail, usernameIsValid, async (req, res) => 
     }
 });
 
+authRouter.get("/forum", authenticateToken, (req, res) => {
+
+    if (req.user["role_id"] === 1) {
+        return res.send(forumPageAdmin);
+    } else if (req.user["role_id"] === 2) {
+        return res.send(forumPageCoach);
+    } else {
+        return res.send(forumPageAthlete);
+    }
+});
 
 authRouter.get("/confirm", tokenIsValid, async (req, res) => {
 
-    const connect = await connection.getConnection();
+    const connect = await connectionPool.getConnection();
     await connect.beginTransaction();
 
     try {
@@ -250,6 +241,9 @@ authRouter.get("/confirm", tokenIsValid, async (req, res) => {
 
 });
 
-export default authRouter;
+
+
+
+export {authRouter};
 
 

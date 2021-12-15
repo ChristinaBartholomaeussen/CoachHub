@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import jwt from "jsonwebtoken";
 
-import connection from "../database/config.js";
+import {connectionPool} from "../database/config.js";
 
 import { createPage } from "../render/render.js";
 
@@ -25,19 +25,19 @@ async function tokenIsValid(req, res, next) {
 
 
 function authenticateToken(req, res, next) {
-
+   
     const token = req.cookies.accessToken;
 
     if (!token || token === undefined) {
 
-        return res.status(401).redirect("/login");
+        return res.status(401).send();
 
     } else {
         try {
 
             const user = jwt.verify(token, process.env.ACCESS_TOKEN_KEY);
             req.user = user;
-            next();
+            return next();
 
         } catch {
             return res.status(500).redirect("/");
@@ -71,7 +71,7 @@ function isAthlete(req, res, next) {
 
 async function isValidEmail(req, res, next) {
 
-    const [rows] = await connection.execute(`SELECT * FROM users WHERE email = ?`, [req.body.email]);
+    const [rows] = await connectionPool.execute(`SELECT * FROM users WHERE email = ?`, [req.body.email]);
 
     if(req.user === undefined) {
 
@@ -94,7 +94,7 @@ async function isValidEmail(req, res, next) {
 
 async function usernameIsValid(req, res, next) {
 
-    const connect = await connection.getConnection();
+    const connect = await connectionPool.getConnection();
 
     const [rows] = await connect.execute(`SELECT * FROM users WHERE username = ?`, [req.body.username]);
 
@@ -108,7 +108,7 @@ async function usernameIsValid(req, res, next) {
 
 async function isEnabled(req, res, next) {
 
-    const connect = await connection.getConnection();
+    const connect = await connectionPool.getConnection();
 
     const [rows] = await connect.execute(`SELECT * FROM users WHERE email = ?`, [req.body.email]);
 

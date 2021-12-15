@@ -1,5 +1,5 @@
 import express from "express";
-import connection from "../database/config.js";
+import {connectionPool} from "../database/config.js";
 const coachRouter = express.Router();
 import bcrypt from "bcrypt";
 
@@ -32,7 +32,7 @@ coachRouter.delete("/booking/:id", async (req, res) => {
 
     const sessionBookingId = req.params.id;
 
-    const connect = await connection.getConnection();
+    const connect = await connectionPool.getConnection();
 
     try{
         await connect.execute(`DELETE FROM bookings WHERE session_id = ?`, [sessionBookingId]);
@@ -49,7 +49,7 @@ coachRouter.patch("/bookings/:id", async (req, res) => {
 
     const sessionId = req.params.id;
 
-    const connect = await connection.getConnection();
+    const connect = await connectionPool.getConnection();
 
     const {email, first_name, last_name, gender, phone_number} = req.body;
 
@@ -115,7 +115,7 @@ coachRouter.patch("/bookings/:id", async (req, res) => {
 
 coachRouter.get("/api/bookings", async (req, res) => {
 
-    const connect = await connection.getConnection();
+    const connect = await connectionPool.getConnection();
 
     try {
 
@@ -143,7 +143,7 @@ coachRouter.get("/api/bookings", async (req, res) => {
 
 coachRouter.get("/api", async (req, res) => {
 
-    const connect = await connection.getConnection();
+    const connect = await connectionPool.getConnection();
 
     try {
 
@@ -189,7 +189,7 @@ coachRouter.get("/api", async (req, res) => {
 
 coachRouter.delete("/", async (req, res) => {
 
-    const connect = await connection.getConnection();
+    const connect = await connectionPool.getConnection();
 
     try {
         await connect.execute("DELETE FROM users WHERE user_id = ?", [req.user["id"]]);
@@ -205,7 +205,7 @@ coachRouter.delete("/", async (req, res) => {
 
 coachRouter.patch("/", isValidEmail, async (req, res) => {
 
-    const connect = await connection.getConnection();
+    const connect = await connectionPool.getConnection();
     await connect.beginTransaction();
 
     const [rows] = await connect.execute(`SELECT city_id FROM cities WHERE postal_code = ?;`, [req.body.postal_code]);
@@ -274,7 +274,7 @@ coachRouter.patch("/", isValidEmail, async (req, res) => {
 coachRouter.get("/api/training-session", async (req, res) => {
 
 
-    const connect = await connection.getConnection();
+    const connect = await connectionPool.getConnection();
 
     const [rows] = await connect.execute(`SELECT ts.*, s.title FROM training_sessions ts
     JOIN services s ON ts.service_id = s.service_id
@@ -288,7 +288,7 @@ coachRouter.get("/api/training-session", async (req, res) => {
 
 coachRouter.delete("/training-sessions/:sessionId", async (req, res) => {
 
-    const connect = await connection.getConnection();
+    const connect = await connectionPool.getConnection();
 
     try {
         await connect.execute(`DELETE ts FROM training_sessions ts
@@ -316,7 +316,7 @@ coachRouter.post("/training-sessions", async (req, res) => {
         return res.status(400).send();
     } else {
 
-        const connect = await connection.getConnection();
+        const connect = await connectionPool.getConnection();
 
         try {
             await connect.execute(`INSERT INTO training_sessions (date, start, end, service_id) VALUES
@@ -341,7 +341,7 @@ coachRouter.get("/services", (req, res) => {
 
 coachRouter.get("/api/services", async (req, res) => {
 
-    const connect = await connection.getConnection();
+    const connect = await connectionPool.getConnection();
 
     try {
 
@@ -360,7 +360,7 @@ coachRouter.get("/api/services", async (req, res) => {
 
 coachRouter.post("/services", async (req, res) => {
 
-    const connect = await connection.getConnection();
+    const connect = await connectionPool.getConnection();
 
     await connect.beginTransaction();
 
@@ -396,7 +396,7 @@ coachRouter.post("/services", async (req, res) => {
 
 coachRouter.delete("/services/:service_id", async (req, res) => {
 
-    const connect = await connection.getConnection();
+    const connect = await connectionPool.getConnection();
 
     await connect.beginTransaction();
 
@@ -419,4 +419,4 @@ coachRouter.delete("/services/:service_id", async (req, res) => {
 
 
 
-export default coachRouter;
+export {coachRouter};

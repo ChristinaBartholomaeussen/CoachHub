@@ -1,17 +1,20 @@
 import { admin_password } from "../encryption.js";
-import connection from "./config.js";
+import {connectionPool} from "./config.js";
 
 import fetch from "node-fetch";
 
 (async () => {
 
-    /*await connection.execute(`DROP TABLE IF EXISTS chat_messages,
+    const connect = await connectionPool.getConnection();
+
+    await connect.execute(`DROP TABLE IF EXISTS chat_messages,
     bookings, confirmation_tokens, athletes, training_sessions, services,
     sports, commercial_coachs, private_coachs, coachs, coach_types, users,
-    roles, address;`);*/
+    roles, address;`);
 
-    await connection.execute(`DROP TABLE IF EXISTS chat_message;`);
+    //await connectionPool.execute(`DROP TABLE IF EXISTS training_sessions;`);
 
+    
     const cities = `CREATE TABLE IF NOT EXISTS cities (
             city_id INT PRIMARY KEY AUTO_INCREMENT,
             city_name VARCHAR(255),
@@ -117,7 +120,7 @@ import fetch from "node-fetch";
             date DATE NOT NULL,
             start TIME NOT NULL,
             end TIME NOT NULL,
-            isConfirmed TINYINT NOT NULL DEFAULT 0,
+            isBooked TINYINT NOT NULL DEFAULT 0,
             service_id INT,
             FOREIGN KEY (service_id) 
                 REFERENCES services(service_id)
@@ -157,6 +160,7 @@ import fetch from "node-fetch";
                 ON DELETE CASCADE,
             FOREIGN KEY (session_id) 
                 REFERENCES training_sessions(session_id)
+                ON DELETE CASCADE
         );`;
 
     const chat_messages = `CREATE TABLE IF NOT EXISTS chat_messages (
@@ -170,32 +174,32 @@ import fetch from "node-fetch";
         );`
 
     
-    //await connection.execute(cities);
-    await connection.execute(address);
-    await connection.execute(roles);
-    await connection.execute(users);
-    await connection.execute(coach_types);
-    await connection.execute(coachs);
-    await connection.execute(private_coachs);
-    await connection.execute(commercial_coachs);
-    await connection.execute(sports);
-    await connection.execute(services);
-    await connection.execute(training_sessions);
-    await connection.execute(athletes);
-    await connection.execute(confirmation_tokens);
-    await connection.execute(bookings);
-    await connection.execute(chat_messages); 
+    //await connectionPool.execute(cities);
+    await connect.execute(address);
+    await connect.execute(roles);
+    await connect.execute(users);
+    await connect.execute(coach_types);
+    await connect.execute(coachs);
+    await connect.execute(private_coachs);
+    await connect.execute(commercial_coachs);
+    await connect.execute(sports);
+    await connect.execute(services);
+    await connect.execute(training_sessions);
+    await connect.execute(athletes);
+    await connect.execute(confirmation_tokens);
+    await connect.execute(bookings);
+    await connect.execute(chat_messages); 
 
 
-    /*await connection.execute(`INSERT INTO sports (name) VALUES 
+    await connect.execute(`INSERT INTO sports (name) VALUES 
     ('Fodbold'), ('Håndbold'), ('Badminton'), ('Tennis'), ('Hockey'), ('Bordtennis'), ('Volleyball'), ('Basket ball'), ('Baseball'), ('Rugby'), ('Golf'), ('Amerikansk fodbold')`);
 
 
-    await connection.execute("INSERT INTO coach_types (coach_type_id, coach_type) VALUES (1, 'Private'), (2, 'Commercial');");
-    await connection.execute("INSERT INTO roles(role_id, role_type) VALUES (1, 'admin'), (2, 'coach'), (3, 'athlete')");
+    await connect.execute("INSERT INTO coach_types (coach_type_id, coach_type) VALUES (1, 'Private'), (2, 'Commercial');");
+    await connect.execute("INSERT INTO roles(role_id, role_type) VALUES (1, 'admin'), (2, 'coach'), (3, 'athlete')");
     
-    await connection.execute(`INSERT INTO users (email, password, username, isEnabled, role_id) 
-    VALUES ('c.m.bartholo@gmail.com', '${admin_password}', 'Admin', 1, 1);`); */
+    await connect.execute(`INSERT INTO users (email, password, username, isEnabled, role_id) 
+    VALUES ('c.m.bartholo@gmail.com', '${admin_password}', 'Admin', 1, 1);`); 
 
     /*const response = await fetch("https://api.dataforsyningen.dk/postnumre");
     const data = await response.json();
@@ -203,7 +207,7 @@ import fetch from "node-fetch";
     for(const d of data) {
         const name = d["navn"];
         const nr = d["nr"];
-        await connection.execute(`INSERT INTO cities (city_name, postal_code) 
+        await connectionPool.execute(`INSERT INTO cities (city_name, postal_code) 
         VALUES ('${name}', '${nr}');`);
     };*/
 

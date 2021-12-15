@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
 const adminRouter = express.Router();
-import connection from "../database/config.js";
+import {connectionPool} from "../database/config.js";
 
 import nodemailer from "nodemailer";
 
@@ -39,7 +39,7 @@ adminRouter.get("/profiles/api", async (req, res) => {
 
     if (status !== undefined && role !== undefined) {
 
-        const [rows] = await connection.execute(`SELECT  u.*, ct.coach_type, 
+        const [rows] = await connectionPool.execute(`SELECT  u.*, ct.coach_type, 
         c.phone_number, a.street_name, a.number, 
         ci.city_name, ci.postal_code, 
         pc.first_name, pc.last_name, 
@@ -63,7 +63,7 @@ adminRouter.get("/profiles/api", async (req, res) => {
 
 adminRouter.patch("/profiles/api/:userId", async (req, res) => {
 
-    const conn = await connection.getConnection();
+    const conn = await connectionPool.getConnection();
     
     await conn.beginTransaction();
 
@@ -131,4 +131,4 @@ adminRouter.patch("/profiles/api/:userId", async (req, res) => {
 
 
 
-export default adminRouter;
+export {adminRouter};

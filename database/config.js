@@ -1,4 +1,3 @@
-
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -13,7 +12,7 @@ const config = {
     multipleStatements: true
 }
 
-const connection = mysql.createPool(config);
+const connectionPool = mysql.createPool(config);
 
 
-export default connection;
+export {connectionPool};

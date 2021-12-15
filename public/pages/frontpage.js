@@ -236,7 +236,7 @@ function getAvaibleTrainingSessions(e) {
 
 function addBooking(sessionId, date, start, end) {
 
-    fetch("/booking", {
+    fetch("/athletes/booking", {
         method: "POST",
         headers: {
             "Content-type": "application/json; charset=UTF-8"
@@ -254,6 +254,11 @@ function addBooking(sessionId, date, start, end) {
             case 200:
                 toastr.success("Din træner skal godkend din anmodning, før du kan se din booking.");
                 setTimeout(() => avaiableSessions.hide, 3000);
+                break;
+
+            case 401:
+                toastr.warning("Du skal logge ind, før du kan lave en booking.");
+                setTimeout(() => location.href = "/login", 3000);
                 break;
 
             case 403:

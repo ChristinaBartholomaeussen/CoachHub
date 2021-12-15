@@ -6,7 +6,7 @@ const athleteRouter = express.Router();
 
 import { createAthletePage } from "../render/render.js";
 
-import connection from "../database/config.js";
+import {connectionPool} from "../database/config.js";
 
 import { isValidEmail } from "../middleware/auth.js";
 
@@ -25,7 +25,7 @@ const calendarPage = createAthletePage("/athlete/calendar.html", {
 
 athleteRouter.get("/bookings", async (req, res) => {
 
-    const connect = await connection.getConnection();
+    const connect = await connectionPool.getConnection();
 
     await connect.beginTransaction();
     
@@ -66,7 +66,7 @@ athleteRouter.get("/homepage", (req, res) => {
 
 athleteRouter.delete("/", async (req, res) => {
 
-    const connect = await connection.getConnection();
+    const connect = await connectionPool.getConnection();
 
     try {
 
@@ -92,7 +92,7 @@ athleteRouter.patch("/", isValidEmail, async (req, res) => {
         return res.status(400).send();
 
     } else {
-        const connect = await connection.getConnection();
+        const connect = await connectionPool.getConnection();
         try {
             await connect.execute(`UPDATE users u 
             JOIN athletes a ON u.user_id = a.user_id
@@ -116,7 +116,7 @@ athleteRouter.patch("/", isValidEmail, async (req, res) => {
 
 athleteRouter.get("/api", async (req, res) => {
 
-    const connect = await connection.getConnection();
+    const connect = await connectionPool.getConnection();
 
     try {
         const [rows] = await connect.execute(`SELECT u.email, a.first_name, a.last_name, 
@@ -132,13 +132,29 @@ athleteRouter.get("/api", async (req, res) => {
         return res.status(500).send();
     }
 
-})
+});
 
+athleteRouter.post("/booking",  async (req, res) => {
 
+    const connect = await connectionPool.getConnection();
 
+    const { booking_date, booking_start, booking_end, session_id } = req.body;
 
+    await connect.beginTransaction();
 
+    try {
+        await connect.execute(`INSERT INTO bookings (booking_date, booking_start, booking_end, athlete_id, session_id)
+        VALUES (?, ?, ?, ?, ?)`, [booking_date, booking_start, booking_end, req.user["id"], session_id]);
 
+        await connect.commit();
+        connect.release();
+        return res.status(200).send();
 
+    } catch (err) {
+        connect.rollback();
+        return res.status(500).send();
+    }
 
-export default athleteRouter;
+});
+
+export {athleteRouter};

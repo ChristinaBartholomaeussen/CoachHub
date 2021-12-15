@@ -301,8 +301,6 @@ function acceptBooking(e) {
 
     })
 
-
-
 }
 
 function rejectBooking(e) {
