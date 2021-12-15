@@ -1,4 +1,4 @@
-const socket = io("http://localhost:8080/forum");
+const socket = io("/forum");
 const messageInput = document.getElementById("message");
 const messageForm = document.getElementById("message-form");
 const messageWrapper = document.getElementById("message-wrapper");
