@@ -11,15 +11,13 @@ const authRouter = express.Router();
 import jwt from "jsonwebtoken";
 import connection from "../database/config.js";
 
-import { authenticateToken, tokenIsValid, isEnabled, isValidEmail } from "../middleware/auth.js";
+import { authenticateToken, tokenIsValid, isEnabled, isValidEmail, usernameIsValid } from "../middleware/auth.js";
 
-import { createPage } from "../render/render.js";
+import { createAdminPage, createAthletePage, createCoachPage, createPage } from "../render/render.js";
 
 
-
-//Create page
 const loginPage = createPage("./auth/login.html", {
-    title: "Login | Frontpage"
+    title: "Login"
 });
 
 
@@ -32,19 +30,36 @@ authRouter.get("/login", (req, res) => {
     res.send(loginPage);
 });
 
-/***
- * Awaiter den spcifikke bruger fra databasen. Hvis objektet ikke er tomt
- * tjekkes der, om password i reg.body er det samme som det i databasen. 
- * Hvis disse er ens laves der et nyt objekt med en email og rolle_id. 
- * Ud fra dette bliver der genereret en token ved brug af JWT.
- * Derefter bliver der sat en ny cookie "accessToken" med værdien af den
- * generedede token. Brugeren sendes med retur til frontend.
- */
+
+const forumPageAthlete = createAthletePage("./auth/forum.html", {
+    tile: "Forum"
+});
+
+const forumPageCoach = createCoachPage("./auth/forum.html", {
+    tile: "Forum"
+});
+
+const forumPageAdmin = createAdminPage("./auth/forum.html", {
+    tile: "Forum"
+});
+
+
+
+authRouter.get("/forum", authenticateToken, (req, res) => {
+
+    if (req.user["role_id"] === 1) {
+        return res.send(forumPageAdmin);
+    } else if (req.user["role_id"] === 2) {
+        return res.send(forumPageCoach);
+    } else {
+        return res.send(forumPageAthlete);
+    }
+});
+
 
 authRouter.post("/login", isEnabled, async (req, res) => {
 
     const [rows] = await connection.execute("SELECT * FROM users WHERE email = ?", [req.body.email]);
-
 
     if (Object.entries(rows).length !== 0) {
 
@@ -55,7 +70,7 @@ authRouter.post("/login", isEnabled, async (req, res) => {
             const user = {
                 email: rows[0]["email"],
                 role_id: rows[0]["role_id"],
-                token: rows[0]["token"],
+                username: rows[0]["username"],
                 id: rows[0]["user_id"]
             };
 
@@ -67,11 +82,7 @@ authRouter.post("/login", isEnabled, async (req, res) => {
             return res.status(401).send();
         }
     }
-
-
 });
-
-
 
 authRouter.get("/logout", authenticateToken, (req, res) => {
     return res.clearCookie("accessToken").status(200).redirect("/");
@@ -98,111 +109,84 @@ authRouter.get("/signup/coachs", (req, res) => {
     res.send(newCoach);
 });
 
-authRouter.post("/coachs", isValidEmail, async (req, res) => {
+authRouter.post("/coachs", isValidEmail, usernameIsValid, async (req, res) => {
 
-    console.log("vi er i opret coach nu");
-    const conn = await connection.getConnection();
+    const { email, password, username, postal_code, street_name, number, phone, coach_type,
+        first_name, last_name, company_name, cvr_number } = req.body;
 
-    await conn.beginTransaction();
+    const connect = await connection.getConnection();
+
+    await connect.beginTransaction();
 
     try {
 
-        //hasher password
         const salt = await bcrypt.genSalt();
-        const hashedPassword = await bcrypt.hash(req.body.password, salt);
+        const hashedPassword = await bcrypt.hash(password, salt);
 
-        //Genererer en random token, for ikke at expose id, når brugeren skal redirectes til sin egen side
-        const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        const userId = await connect.execute("INSERT INTO users (email, password, username, role_id) VALUES (?, ?, ?, ?);",
+            [email, hashedPassword, username, 2]);
 
-
-        //indsætter oplysninger i user tabellen
-        const userId = await conn.execute("INSERT INTO users (email, password, token, role_id) VALUES (?, ?, ?, ?);",
-            [req.body.email, hashedPassword, token, 2]);
+        const postalCode = await connect.execute("SELECT city_id FROM cities WHERE postal_code = ?;",
+            [postal_code]);
 
 
-        // henter id for den spefikke by, de tilhører postnummeret
-        const postalCode = await conn.execute("SELECT city_id FROM cities WHERE postal_code = ?;",
-            [req.body.postal_code]);
-
-
-        //Hvis postnummeret ikke findes sendes der en statuskode
         if (postalCode[0][0]["city_id"] === undefined) return res.status(400).send();
 
-        //Indsætter oplysninger i adresse tabellen 
-        const addressId = await conn.execute("INSERT INTO address (street_name, number, city_id) VALUES (?, ?, ?);",
-            [req.body.street_name, req.body.number, postalCode[0][0]["city_id"]]);
+        const addressId = await connect.execute("INSERT INTO address (street_name, number, city_id) VALUES (?, ?, ?);",
+            [street_name, number, postalCode[0][0]["city_id"]]);
 
 
-
-        //Indsætter oplysninger i coach tabellen
-        await conn.execute(`INSERT INTO coachs (user_id, phone_number, coach_type_id, address_id) VALUES
-            (?, ?, ?, ?);`, [userId[0]["insertId"], req.body.phone, req.body.coach_type, addressId[0]["insertId"]]);
+        await connect.execute(`INSERT INTO coachs (user_id, phone_number, coach_type_id, address_id) VALUES
+            (?, ?, ?, ?);`, [userId[0]["insertId"], phone, coach_type, addressId[0]["insertId"]]);
 
 
-        //Alt efter om typen af coach er private eller virksomheden
-        if (req.body.coach_type === 1) {
+        if (coach_type === 1) {
 
-            await conn.execute(`INSERT INTO private_coachs (user_id, first_name, last_name) VALUES
-                (?,?,?)`, [userId[0]["insertId"], req.body.first_name, req.body.last_name]);
+            await connect.execute(`INSERT INTO private_coachs (user_id, first_name, last_name) VALUES
+                (?,?,?)`, [userId[0]["insertId"], first_name, last_name]);
 
-        } else if (req.body.coach_type === 2) {
+        } else if (coach_type === 2) {
 
-            await conn.execute(`INSERT INTO commercial_coachs (user_id, company_name, cvr_number) VALUES
-                (?,?,?)`, [userId[0]["insertId"], req.body.company_name, req.body.cvr_number]);
+            await connect.execute(`INSERT INTO commercial_coachs (user_id, company_name, cvr_number) VALUES
+                (?,?,?)`, [userId[0]["insertId"], company_name, cvr_number]);
 
         }
 
-        //Comitter ændringerne til databasen & sender sender statuskode retur
-        await conn.commit();
+        await connect.commit();
+        connect.release();
         return res.status(200).send();
 
     } catch (err) {
-        conn.rollback();
+        connect.rollback();
         console.log(err);
         return res.status(400).send();
     }
 });
 
-authRouter.post("/athletes", isValidEmail, async (req, res) => {
+authRouter.post("/athletes", isValidEmail, usernameIsValid, async (req, res) => {
 
     const connect = await connection.getConnection();
     await connect.beginTransaction();
 
+    const { email, first_name, last_name, username, password, gender, date_of_birth, phone } = req.body;
+
     try {
-        //Tjek om der allerede findes en bruger med den indtastede email
 
-        //hasher password brugeren indtaster, inden det kommer ind i databasen
         const salt = await bcrypt.genSalt();
-        const hashedPassword = await bcrypt.hash(req.body.password, salt);
+        const hashedPassword = await bcrypt.hash(password, salt);
 
-        //Generer en ny confirmation token til brugeren, der udløber efter 2 timer
-        const token = jwt.sign({ name: req.body.email }, process.env.CONFIRMATION_TOKEN_KEY, {
-            expiresIn: "120s"
-        });
+        const token = jwt.sign({ name: email }, process.env.CONFIRMATION_TOKEN_KEY);
 
-        //Generer en radom string, for ikke at expose brugerns id, når vi redirecter til deres egen side
-        const userToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-
-
-        //Vi skal bruge den autoincrementerede ID 
-        const [ResultSetHeader] = await connect.execute(`INSERT INTO users (email, password, token, role_id) 
-            VALUES (?, ?, ?, ?);`, [req.body.email, hashedPassword, userToken, 3]);
-
+        const [ResultSetHeader] = await connect.execute(`INSERT INTO users (email, password, username, role_id) 
+            VALUES (?, ?, ?, ?);`, [email, hashedPassword, username, 3]);
 
         await connect.execute(`INSERT INTO athletes (first_name, last_name, gender, date_of_birth, phone_number, user_id)
             VALUES (?, ?, ?, ?, ?, ?);`,
-            [req.body.first_name, req.body.last_name, req.body.gender,
-            req.body.date_of_birth, req.body.phone, ResultSetHeader["insertId"]]);
+            [first_name, last_name, gender,
+                date_of_birth, phone, ResultSetHeader["insertId"]]);
 
-
-        //Decoder overstående token, så iat og exp kan indsættes i databasen
-        const base64String = token.split('.')[1];
-        const decodedValue = JSON.parse(Buffer.from(base64String, 'base64').toString('ascii'));
-
-
-        await connect.execute(`INSERT INTO confirmation_tokens (token, created_at, expires_at, user_id)
-            VALUES (?, ?, ?, ?);`, [token, decodedValue["iat"], decodedValue["exp"], ResultSetHeader["insertId"]]);
-
+        await connect.execute(`INSERT INTO confirmation_tokens (token, user_id)
+            VALUES (?, ?);`, [token, ResultSetHeader["insertId"]]);
 
         const transporter = nodemailer.createTransport({
             port: 465,
@@ -219,10 +203,10 @@ authRouter.post("/athletes", isValidEmail, async (req, res) => {
 
         const mailOption = {
             from: process.env.NODEMAILER_USER,
-            to: req.body.email,
+            to: email,
             subject: "Bekræft Oprettelse",
             html:
-                `<h1>Velkommen ${req.body.first_name} ${req.body.last_name}</h1>
+                `<h1>Velkommen ${first_name} ${last_name}</h1>
                 <a href="${link}">Bekræft email</a>`
         }
 
@@ -231,6 +215,7 @@ authRouter.post("/athletes", isValidEmail, async (req, res) => {
         });
 
         await connect.commit();
+        connect.release();
         return res.status(201).send();
 
     } catch (err) {
@@ -254,7 +239,7 @@ authRouter.get("/confirm", tokenIsValid, async (req, res) => {
             WHERE ct.token = ?`, [req.query.token]);
 
         await connect.commit();
-
+        connect.release();
         return res.redirect("/login");
 
     } catch (err) {

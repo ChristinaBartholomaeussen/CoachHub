@@ -128,6 +128,7 @@ coachRouter.get("/api/bookings", async (req, res) => {
         JOIN users u ON a.user_id = u.user_id
         WHERE s.user_id = ?;`, [req.user["id"]]);
 
+        connect.release();
         return res.send({bookings: rows});
 
 
@@ -192,8 +193,9 @@ coachRouter.delete("/", async (req, res) => {
 
     try {
         await connect.execute("DELETE FROM users WHERE user_id = ?", [req.user["id"]]);
+        connect.release();
         return res.status(200).send();
-
+        
 
     } catch (err) {
         return res.status(500).send();
@@ -235,6 +237,7 @@ coachRouter.patch("/", isValidEmail, async (req, res) => {
                
 
                 await connect.commit();
+                connect.release();
                 return res.status(200);
             } catch (err) {
                 return res.status(500).send();
@@ -256,6 +259,7 @@ coachRouter.patch("/", isValidEmail, async (req, res) => {
                 number, ResultHeader["insertId"], req.user["id"]]);
 
                 await connect.commit();
+                connect.release();
                 return res.status(200);
 
             } catch (err) {
@@ -276,7 +280,7 @@ coachRouter.get("/api/training-session", async (req, res) => {
     JOIN services s ON ts.service_id = s.service_id
     JOIN coachs c ON s.user_id = c.user_id
     WHERE c.user_id = ?`, [req.user["id"]]);
-
+    connect.release();
     return res.send({ training_sesssions: rows });
 
 });

@@ -14,14 +14,51 @@ const athleteFrontpage = createAthletePage("/athlete/frontpage.html", {
     title: " Athlete Frontpage"
 });
 
-
 const homepage = createAthletePage("/athlete/homepage.html", {
     title: "Homepage"
-})
+});
+
+const calendarPage = createAthletePage("/athlete/calendar.html", {
+    title: "Kalender"
+});
+
+
+athleteRouter.get("/bookings", async (req, res) => {
+
+    const connect = await connection.getConnection();
+
+    await connect.beginTransaction();
+    
+    try{
+
+        const [rows] = await connect.execute(`SELECT b.*, s.title FROM bookings b
+        JOIN training_sessions ts ON b.session_id = ts.session_id
+        JOIN services s on ts.service_id = s.service_id
+        WHERE b.athlete_id = ?`, [req.user["id"]]);
+
+        await connect.commit();
+        connect.release();
+        return res.send({bookings : rows});
+
+
+    } catch(err) {
+        console.log(err);
+        connect.rollback();
+        return res.sendStatus(500);
+    }
+
+
+
+});
 
 athleteRouter.get("/", (req, res) => {
     res.send(athleteFrontpage);
-})
+});
+
+athleteRouter.get("/calendar", (req, res) => {
+    res.send(calendarPage);
+});
+
 
 athleteRouter.get("/homepage", (req, res) => {
     res.send(homepage);

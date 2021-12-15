@@ -7,6 +7,16 @@ main {
     background-size: cover;
 }
 
+.chat-box {
+    background-color: var(--my-natural); 
+    border-radius: 12px; 
+    height: 459px; 
+    width: 400px; 
+    bottom: 15%; 
+    right: 2%; 
+    position: absolute;
+}
+
 
 .navbar {
     padding-top: 20px;
@@ -191,6 +201,19 @@ footer p {
     animation-delay: 0.8s;
 }
 
+.own-chat-message {
+    background-color: var(--my-secondary);
+    border-radius: 6px;
+    width: 55%;
+    float: left;
+}
+
+.other-chat-message {
+    background-color: var(--my-natural);
+    border-radius: 6px;
+    width: 55%;
+    float: right;
+}
 
 
 :root {

@@ -55,37 +55,50 @@ const regEmail = /\S+@\S+\.\S+/;
 
 function validatePrivateForm() {
 
-    if (document.getElementById("firstName").value === '' || document.getElementById("lastName").value === '' ||
-        document.getElementById("streetNameP").value === '' || document.getElementById("postalCodeP").value === '' ||
-        document.getElementById("emailP").value === '' || document.getElementById("passwordP").value === '' ||
-        document.getElementById("houseNumberP").value === '') {
+    const firstName = document.getElementById("firstName").value;
+    const lastName = document.getElementById("lastName").value;
+    const streetName = document.getElementById("streetNameP").value;
+    const postalCode = document.getElementById("postalCodeP").value;
+    const email = document.getElementById("emailP").value;
+    const houseNumber = document.getElementById("houseNumberP").value;
+    const password = document.getElementById("passwordP").value;
+    const password2 = document.getElementById("passwordP1").value;
+    const username = document.getElementById("usernameP").value;
+    const phone = document.getElementById("phoneP").value;
+
+    if (firstName.trim().length === 0 || lastName.trim().length === 0 || streetName.trim().length === 0 || 
+    postalCode.trim().length === 0 || email.trim().length === 0 || houseNumber.trim().length === 0 || 
+    password.trim().length === 0 || password2.trim().length === 0 || username.trim().length === 0 ||
+    phone.trim().length === 0) {
 
         toastr.warning("Udfyld venligst alle felter");
         return false;
 
-    } else if (document.getElementById("passwordP").value !== document.getElementById("passwordP1").value) {
+    } else if (password !== password2) {
 
         toastr.warning("De indtastede passwords stemmer ikke overens.");
 
         return false;
 
-    } else if (document.getElementById("postalCodeP").value.length !== 4 ||
-        regNumber.test(document.getElementById("postalCodeP").value) === false) {
+    } else if (postalCode.length !== 4 ||
+        regNumber.test(postalCode) === false) {
 
         toastr.warning("Indtast venligst et gyldigt postnummer.");
         return false;
 
-    } else if (document.getElementById("phoneP").value.length !== 8 ||
-        regNumber.test(document.getElementById("phoneP").value) === false) {
+    } else if (phone.length !== 8 ||
+        regNumber.test(phone) === false) {
 
         toastr.warning("Indtast venligst et gyldigt telefonnummer.");
         return false;
 
-    } else if (regEmail.test(document.getElementById("emailP").value) === false) {
+    } else if (regEmail.test(email) === false) {
 
         toastr.warning("Indtast venligst en gyldig emailadresse.");
         return false;
+
     } else if (!isConfirmed.checked) {
+
         toastr.warning("Du skal acceptere betingelserne, før du kan fortsætte.");
         return false;
     }
@@ -96,40 +109,54 @@ function validatePrivateForm() {
 
 function validateCommercialForm() {
 
-    if (document.getElementById("companyName").value === '' || document.getElementById("cvr").value === '' ||
-        document.getElementById("streetNameC").value === '' || document.getElementById("postalCodeC").value === '' ||
-        document.getElementById("emailC").value === '' || document.getElementById("passwordC").value === '' ||
-        document.getElementById("houseNumberC").value === '') {
+    const companyName = document.getElementById("companyName").value;
+    const cvrNumber = document.getElementById("cvr").value;
+    const streetName = document.getElementById("streetNameC").value;
+    const postalCode = document.getElementById("postalCodeC").value;
+    const email = document.getElementById("emailC").value;
+    const houseNumber = document.getElementById("houseNumberC").value;
+    const password = document.getElementById("passwordC").value;
+    const password2 = document.getElementById("passwordC1").value;
+    const username = document.getElementById("usernameC").value;
+    const phone = document.getElementById("phoneC").value;
+    
+
+    if (companyName.trim().length === 0 || cvrNumber.trim().length === 0 || streetName.trim().length === 0 || 
+    postalCode.trim().length === 0 || email.trim().length === 0 || houseNumber.trim().length === 0 || 
+    password.trim().length === 0 || password2.trim().length === 0 || username.trim().length === 0 ||
+    phone.trim().length === 0) {
 
         toastr.warning("Udfyld venligst alle felter");
         return false;
 
-    } else if (document.getElementById("passwordC").value !== document.getElementById("passwordC1").value) {
+    } else if (password !== password2) {
 
         toastr.warning("De indtastede passwords stemmer ikke overens.");
-
         return false;
 
-    } else if (document.getElementById("postalCodeC").value.length !== 4 ||
-        regNumber.test(document.getElementById("postalCodeC").value) === false) {
+    } else if (postalCode.length !== 4 ||
+        regNumber.test(postalCode) === false) {
 
         toastr.warning("Indtast venligst et gyldigt postnummer.");
         return false;
 
-    } else if (document.getElementById("phoneC").value.length !== 8 ||
-        regNumber.test(document.getElementById("phoneC").value) === false) {
+    } else if (phone !== 8 ||
+        regNumber.test(phone) === false) {
 
         toastr.warning("Indtast venligst et gyldigt telefonnummer.");
         return false;
 
-    } else if (regEmail.test(document.getElementById("emailC").value) === false) {
+    } else if (regEmail.test(email) === false) {
 
         toastr.warning("Indtast venligst en gyldig emailadresse.");
         return false;
+
     } else if (!isConfirmed.checked) {
+
         toastr.warning("Du skal acceptere betingelserne, før du kan fortsætte.");
         return false;
-    }
+
+    } 
 
     return true;
 }
@@ -144,6 +171,7 @@ function postNewCoach() {
             coach_type: 1,
             first_name: document.getElementById("firstName").value,
             last_name: document.getElementById("lastName").value,
+            username: document.getElementById("usernameP").value,
             street_name: document.getElementById("streetNameP").value,
             number: document.getElementById("houseNumberP").value,
             postal_code: document.getElementById("postalCodeP").value,
@@ -157,6 +185,7 @@ function postNewCoach() {
             coach_type: 2,
             company_name: document.getElementById("companyName").value,
             cvr_number: document.getElementById("cvr").value,
+            username: document.getElementById("usernameC").value,
             street_name: document.getElementById("streetNameC").value,
             number: document.getElementById("houseNumberC").value,
             postal_code: document.getElementById("postalCodeC").value,
@@ -186,7 +215,7 @@ function postNewCoach() {
                 break;
 
             case 409:
-                toastr.error("Der findes allerede en bruger med den valgte email.");
+                toastr.warning("Der findes allerede en bruger med den valgte email eller brugernavn.");
                 break;
 
             case 500:

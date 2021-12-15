@@ -1,15 +1,84 @@
 import express from "express";
 const app = express();
 
+import dotenv from "dotenv";
+dotenv.config();
+
 import http from "http";
 const server = http.createServer(app);
 
 import { Server } from "socket.io";
 const io = new Server(server);
 
-
-
 import cookieParser from "cookie-parser";
+import cookie from "cookie";
+
+import jwt from "jsonwebtoken";
+
+const forum = io.of("/forum");
+
+
+function validateUser(socket, next) {
+    try {
+
+        const cookief = socket.handshake.headers.cookie;
+        const accessToken = cookie.parse(cookief).accessToken;
+        const user = jwt.verify(accessToken, process.env.ACCESS_TOKEN_KEY);
+
+        socket.id = user;
+
+        next();
+
+    } catch (err) {
+        console.log(err);
+        next(err);
+    }
+
+}
+
+forum.use(validateUser);
+
+forum.on("connection", async(socket) =>  {
+
+    const connect = await connection.getConnection();
+
+    const [rows] = await connect.execute(`SELECT u.username, cm.* FROM chat_messages cm
+    JOIN users u ON cm.user_id = u.user_id`);
+
+
+    socket.emit("load-messages", {messages: rows, loggedInUser: socket.id});
+
+
+    socket.broadcast.emit("user-has-joined", socket.id.username);
+
+    socket.on("send-message", async (message)  => {
+
+        const connect = await connection.getConnection();
+        await connect.beginTransaction();
+
+        try{
+            await connect.execute(`INSERT INTO chat_messages (timestamp, user_id, text)
+            VALUES (?, ?, ?)`, [new Date(), socket.id.id, message]);
+
+            await connect.commit();
+            connect.release();
+
+        } catch (err) {
+
+            connect.rollback();
+            console.log(err);
+        }
+
+        socket.broadcast.emit("chat-message", {message: message, name: socket.id});
+    });
+
+    socket.on("disconnect", () => {
+        socket.broadcast.emit("user-disconnected", socket.id.username);
+    });
+
+});
+
+
 app.use(cookieParser());
 app.use(express.static("public"));
 
@@ -25,8 +94,7 @@ app.use('/bootstrap-icons', express.static('./node_modules/bootstrap-icons'));
 
 
 
-import dotenv from "dotenv";
-dotenv.config();
+
 
 import { createPage } from "./render/render.js";
 
@@ -35,20 +103,16 @@ import adminRouter from "./routers/admin.js";
 import athleteRouter from "./routers/athlete.js";
 import { sportsRouter } from "./routers/sports.js";
 import coachRouter from "./routers/coach.js";
-import { authenticateToken, isAuthorized } from "./middleware/auth.js";
+import { authenticateToken, isAuthorized, isAthlete, isCoach } from "./middleware/auth.js";
 import connection from "./database/config.js";
 
-io.on("connection", (socket) => {
 
-    console.log("Welcome ", socket.id);
-
-})
 
 
 app.use(authRouter);
 app.use("/admin", authenticateToken, isAuthorized, adminRouter);
-app.use("/athletes", authenticateToken, athleteRouter);
-app.use("/coachs", authenticateToken, coachRouter);
+app.use("/athletes", authenticateToken, isAthlete, athleteRouter);
+app.use("/coachs", authenticateToken, isCoach, coachRouter);
 
 app.use("/api/sports", sportsRouter);
 
@@ -81,9 +145,9 @@ app.post("/booking", authenticateToken, async (req, res) => {
 
     const connect = await connection.getConnection();
 
-    const {booking_date, booking_start, booking_end, session_id} = req.body;
+    const { booking_date, booking_start, booking_end, session_id } = req.body;
 
-    try{
+    try {
         await connect.execute(`INSERT INTO bookings (booking_date, booking_start, booking_end, athlete_id, session_id)
         VALUES (?, ?, ?, ?, ?)`, [booking_date, booking_start, booking_end, req.user["id"], session_id]);
 
@@ -95,7 +159,6 @@ app.post("/booking", authenticateToken, async (req, res) => {
 
 });
 
-// Finde en specik service ud fra id
 app.get("/services/:id", async (req, res) => {
 
     const serviceId = req.params.id;
@@ -117,7 +180,8 @@ app.get("/services/:id", async (req, res) => {
         JOIN cities ci ON a.city_id = ci.city_id
         WHERE s.service_id = ?;`, [serviceId]);
 
-        return res.send({services: rows});
+        connect.release();
+        return res.send({ services: rows });
 
 
     } catch (err) {
@@ -133,15 +197,16 @@ app.get("/training_session", async (req, res) => {
 
     const connect = await connection.getConnection();
 
-    try{
+    try {
 
         const [rows] = await connect.execute(`select * from training_sessions
         WHERE isBooked = 0 AND service_id = ?;`, [serviceId]);
 
-        return res.send({sessions: rows});
+        connect.release();
+        return res.send({ sessions: rows });
 
 
-    } catch(err) {
+    } catch (err) {
         console.log(err);
         return res.status(500).send();
     }

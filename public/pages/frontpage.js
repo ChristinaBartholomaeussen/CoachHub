@@ -1,5 +1,4 @@
 
-//const socket = io();
 
 const readMoreModal = new bootstrap.Modal(document.getElementById("readMoreModal"));
 const avaiableSessions = new bootstrap.Modal(document.getElementById("avaiableSessions"));
@@ -18,7 +17,6 @@ document.getElementById("searchValue").addEventListener("keyup", () => {
     searchBtn.addEventListener("click", search);
     bsCollapse.hide();
 });
-
 
 function search() {
 
@@ -256,6 +254,7 @@ function addBooking(sessionId, date, start, end) {
             case 200:
                 toastr.success("Din træner skal godkend din anmodning, før du kan se din booking.");
                 setTimeout(() => avaiableSessions.hide, 3000);
+                break;
 
             case 403:
                 toastr.warning("Du skal logge ind, før du kan lave en booking.");

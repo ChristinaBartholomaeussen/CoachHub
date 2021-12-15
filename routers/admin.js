@@ -100,6 +100,7 @@ adminRouter.patch("/profiles/api/:userId", async (req, res) => {
             return res.status(500).send();
         }
 
+        conn.release();
         return res.status(200).send();
     });
 

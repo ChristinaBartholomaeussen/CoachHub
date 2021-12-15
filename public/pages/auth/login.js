@@ -28,6 +28,7 @@ function confirmLogin() {
                             location.href = "/admin";
                             break;
                         case 2:
+                            
                             location.href = "/coachs";
                             break;
                         case 3:
@@ -38,7 +39,6 @@ function confirmLogin() {
                 break;
 
             case 400:
-
                 response.json().then(data => {
 
                     switch (data["role"]) {

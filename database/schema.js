@@ -5,10 +5,12 @@ import fetch from "node-fetch";
 
 (async () => {
 
-    await connection.execute(`DROP TABLE IF EXISTS chat_messages, chat_rooms,
+    /*await connection.execute(`DROP TABLE IF EXISTS chat_messages,
     bookings, confirmation_tokens, athletes, training_sessions, services,
     sports, commercial_coachs, private_coachs, coachs, coach_types, users,
-    roles, address;`);
+    roles, address;`);*/
+
+    await connection.execute(`DROP TABLE IF EXISTS chat_message;`);
 
     const cities = `CREATE TABLE IF NOT EXISTS cities (
             city_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -35,11 +37,11 @@ import fetch from "node-fetch";
             user_id INT AUTO_INCREMENT PRIMARY KEY,
             email VARCHAR(100) NOT NULL,
             password VARCHAR(250) NOT NULL,
-            token VARCHAR(255) NOT NULL,
+            username VARCHAR(100) NOT NULL,
             isEnabled TINYINT NOT NULL DEFAULT 0,
             role_id INT,
             UNIQUE KEY unique_email (email),
-            UNIQUE KEY unique_token (token),
+            UNIQUE KEY unique_username (username),
             FOREIGN KEY (role_id) REFERENCES roles(role_id)
         );`;
 
@@ -136,10 +138,8 @@ import fetch from "node-fetch";
 
     const confirmation_tokens = `CREATE TABLE IF NOT EXISTS confirmation_tokens (
             token_id INT PRIMARY KEY AUTO_INCREMENT,
-            token VARCHAR(250) NOT NULL,
-            created_at INT(11) NOT NULL,
-            expires_at INT(11) NOT NULL,
-            user_id INT,
+            user_id INT NOT NULL,
+            token VARCHAR(255) NOT NULL,
             FOREIGN KEY (user_id) 
                 REFERENCES users(user_id)
                 ON DELETE CASCADE
@@ -159,32 +159,18 @@ import fetch from "node-fetch";
                 REFERENCES training_sessions(session_id)
         );`;
 
-    const chat_rooms = `CREATE TABLE IF NOT EXISTS chat_rooms (
-            room_id INT PRIMARY KEY,
-            athlete_id INT,
-            coach_id INT,
-            FOREIGN KEY (athlete_id) 
-                REFERENCES athletes(user_id)
-                ON DELETE CASCADE,
-            FOREIGN KEY (coach_id)
-                REFERENCES coachs(user_id)
-                ON DELETE CASCADE
-        );`;
-
     const chat_messages = `CREATE TABLE IF NOT EXISTS chat_messages (
-            message_id INT PRIMARY KEY,
+            message_id INT PRIMARY KEY AUTO_INCREMENT,
             timestamp DATETIME NOT NULL,
-            receiver_id INT NOT NULL,
-            sender_id INT NOT NULL,
+            user_id INT NOT NULL,
             text VARCHAR(1000) NOT NULL,
-            chat_room_id INT,
-            FOREIGN KEY (chat_room_id) 
-                REFERENCES chat_rooms(room_id)
+            FOREIGN KEY (user_id) 
+                REFERENCES users(user_id)
                 ON DELETE CASCADE
         );`
 
     
-    await connection.execute(cities);
+    //await connection.execute(cities);
     await connection.execute(address);
     await connection.execute(roles);
     await connection.execute(users);
@@ -195,24 +181,21 @@ import fetch from "node-fetch";
     await connection.execute(sports);
     await connection.execute(services);
     await connection.execute(training_sessions);
-
     await connection.execute(athletes);
     await connection.execute(confirmation_tokens);
     await connection.execute(bookings);
-    await connection.execute(chat_rooms);
     await connection.execute(chat_messages); 
 
 
-    await connection.execute(`INSERT INTO sports (name) VALUES 
+    /*await connection.execute(`INSERT INTO sports (name) VALUES 
     ('Fodbold'), ('Håndbold'), ('Badminton'), ('Tennis'), ('Hockey'), ('Bordtennis'), ('Volleyball'), ('Basket ball'), ('Baseball'), ('Rugby'), ('Golf'), ('Amerikansk fodbold')`);
 
 
     await connection.execute("INSERT INTO coach_types (coach_type_id, coach_type) VALUES (1, 'Private'), (2, 'Commercial');");
     await connection.execute("INSERT INTO roles(role_id, role_type) VALUES (1, 'admin'), (2, 'coach'), (3, 'athlete')");
     
-    const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    await connection.execute(`INSERT INTO users (email, password, token, isEnabled, role_id) 
-    VALUES ('c.m.bartholo@gmail.com', '${admin_password}', '${token}', 1, 1);`);
+    await connection.execute(`INSERT INTO users (email, password, username, isEnabled, role_id) 
+    VALUES ('c.m.bartholo@gmail.com', '${admin_password}', 'Admin', 1, 1);`); */
 
     /*const response = await fetch("https://api.dataforsyningen.dk/postnumre");
     const data = await response.json();
