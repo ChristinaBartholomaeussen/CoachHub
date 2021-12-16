@@ -129,7 +129,6 @@ publicRouter.post("/coachs", isValidEmail, usernameIsValid, async (req, res) => 
         const postalCode = await connect.execute("SELECT city_id FROM cities WHERE postal_code = ?;",
             [postal_code]);
 
-
         if (postalCode[0][0]["city_id"] === undefined) return res.status(400).send();
 
         const addressId = await connect.execute("INSERT INTO address (street_name, number, city_id) VALUES (?, ?, ?);",

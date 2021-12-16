@@ -1,3 +1,6 @@
+document.getElementById("commercialCoach").addEventListener("click", showCommercial);
+document.getElementById("privateCoach").addEventListener("click", showPrivate);
+
 function showPrivate() {
     document.getElementById("privateCoachTemplate").style.display = "block";
     document.getElementById("commercialCoachTemplate").style.display = "none";
