@@ -3,15 +3,15 @@ fetch("/admin/profiles?status=0&role=2")
     .then(({ coachs }) => {
 
         const coachWrapper = document.getElementById("coach-wrapper");
-        
+
         let divId = 0;
 
         coachs.map(coach => {
 
             const coachDiv = document.createElement("div");
-            coachDiv.id = divId+=1;
+            coachDiv.id = divId += 1;
             coachDiv.classList.add("card", "profile-div");
-        
+
             const profilePicture = document.createElement("img");
             profilePicture.classList.add("card-img-top");
             profilePicture.style.marginTop = "10px";
@@ -23,7 +23,7 @@ fetch("/admin/profiles?status=0&role=2")
             cardTitle.classList.add("card-body");
             cardTitle.style.flex = 0;
             coachDiv.append(cardTitle);
-            
+
             const companyPrivate = document.createElement("h5");
             companyPrivate.classList.add("card-title");
 
@@ -72,7 +72,7 @@ fetch("/admin/profiles?status=0&role=2")
             ${escapeHTML(coach["street_name"])} ${escapeHTML(coach["number"])} <br>
             ${escapeHTML(coach["postal_code"])} ${escapeHTML(coach["city_name"])}`
 
-            const acceptDecline= document.createElement("div");
+            const acceptDecline = document.createElement("div");
             acceptDecline.classList.add("card-body", "accept-decline-btn-wrapper");
             coachDiv.append(acceptDecline);
 
@@ -98,18 +98,26 @@ fetch("/admin/profiles?status=0&role=2")
         });
     });
 
-    function acceptProfile(userId, coachDiv, parentDiv) {
+function acceptProfile(userId, coachDiv, parentDiv) {
 
-        fetch(`/admin/profiles/${userId}`, {
-            method: "PATCH", 
-            headers: {
-                "Content-type": "application/json"
-            }
-        })
+    fetch(`/admin/profiles/${userId}`, {
+        method: "PATCH",
+        headers: {
+            "Content-type": "application/json"
+        }
+    })
         .then(response => {
-            if(response.status === 200) {
-                toastr.success("En mail er sendt til brugeren.")
-                parentDiv.removeChild(coachDiv);
+
+            switch (response.status) {
+
+                case 200:
+                    toastr.success("En mail er sendt til brugeren.")
+                    parentDiv.removeChild(coachDiv);
+                    break;
+                case 500:
+                    toastr.error("Der skete en fejl. Prøv igen senere.");
+                    console.log(response.statusText);
+                    break;
             }
         });
-    }
+}
