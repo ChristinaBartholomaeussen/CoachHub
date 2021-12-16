@@ -8,19 +8,19 @@ main {
 }
 
 .chat-box {
-    background-color: var(--my-natural); 
-    border-radius: 12px; 
-    height: 459px; 
-    width: 400px; 
-    bottom: 15%; 
-    right: 2%; 
+    background-color: var(--my-natural);
+    border-radius: 12px;
+    height: 459px;
+    width: 400px;
+    bottom: 15%;
+    right: 2%;
     position: absolute;
 }
 
 
 .navbar {
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top: 0px;
+    padding-bottom: 0px;
 }
 
 .nav-link {
@@ -28,7 +28,8 @@ main {
 }
 
 .navbar-brand {
-    font-size: x-large;
+    font-size: xxx-large;
+    font-family: somelove;
 }
 
 .my-navlink {
@@ -213,14 +214,16 @@ footer p {
 }
 
 .own-chat-message {
-    background-color: var(--my-secondary);
+    background: var(--my-bla1);
+    background: linear-gradient(90deg, rgba(61, 220, 151, 1) 10%, rgba(238, 238, 255, 1) 100%);
     border-radius: 6px;
     width: 55%;
     float: left;
 }
 
 .other-chat-message {
-    background-color: var(--my-natural);
+    background: rgb(238, 238, 255);
+    background: linear-gradient(90deg, rgba(238, 238, 255, 1) 12%, rgba(61, 220, 151, 1) 100%);
     border-radius: 6px;
     width: 55%;
     float: right;
@@ -234,4 +237,9 @@ footer p {
     --my-default: rgb(25, 21, 22);
     --my-natural: rgb(238, 238, 255);
 
+}
+
+@font-face {
+    font-family: somelove;
+    src: url(../assets/Somelove.otf);
 }

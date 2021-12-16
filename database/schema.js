@@ -1,5 +1,5 @@
 import { admin_password } from "../encryption.js";
-import {connectionPool} from "./config.js";
+import { connectionPool } from "./config.js";
 
 import fetch from "node-fetch";
 
@@ -7,11 +7,13 @@ import fetch from "node-fetch";
 
     const connect = await connectionPool.getConnection();
 
+    await connect.beginTransaction();
+
     await connect.execute(`DROP TABLE IF EXISTS chat_messages,
     bookings, confirmation_tokens, athletes, training_sessions, services,
     sports, commercial_coachs, private_coachs, coachs, coach_types, users,
-    roles, address;`);
-    
+    roles, address, cities;`);
+
     const cities = `CREATE TABLE IF NOT EXISTS cities (
             city_id INT PRIMARY KEY AUTO_INCREMENT,
             city_name VARCHAR(255),
@@ -168,8 +170,8 @@ import fetch from "node-fetch";
                 ON DELETE CASCADE
         );`
 
-    
-    //await connectionPool.execute(cities);
+
+    await connect.execute(cities);
     await connect.execute(address);
     await connect.execute(roles);
     await connect.execute(users);
@@ -183,27 +185,28 @@ import fetch from "node-fetch";
     await connect.execute(athletes);
     await connect.execute(confirmation_tokens);
     await connect.execute(bookings);
-    await connect.execute(chat_messages); 
+    await connect.execute(chat_messages);
 
 
     await connect.execute(`INSERT INTO sports (name) VALUES 
     ('Fodbold'), ('Håndbold'), ('Badminton'), ('Tennis'), ('Hockey'), ('Bordtennis'), ('Volleyball'), ('Basket ball'), ('Baseball'), ('Rugby'), ('Golf'), ('Amerikansk fodbold')`);
 
-
     await connect.execute("INSERT INTO coach_types (coach_type_id, coach_type) VALUES (1, 'Private'), (2, 'Commercial');");
     await connect.execute("INSERT INTO roles(role_id, role_type) VALUES (1, 'admin'), (2, 'coach'), (3, 'athlete')");
-    
-    await connect.execute(`INSERT INTO users (email, password, username, isEnabled, role_id) 
-    VALUES ('c.m.bartholo@gmail.com', '${admin_password}', 'Admin', 1, 1);`); 
 
-    /*const response = await fetch("https://api.dataforsyningen.dk/postnumre");
+    await connect.execute(`INSERT INTO users (email, password, username, isEnabled, role_id) 
+    VALUES ('c.m.bartholo@gmail.com', '${admin_password}', 'Admin', 1, 1);`);
+
+    const response = await fetch("https://api.dataforsyningen.dk/postnumre");
     const data = await response.json();
 
     for(const d of data) {
         const name = d["navn"];
         const nr = d["nr"];
-        await connectionPool.execute(`INSERT INTO cities (city_name, postal_code) 
+        await connect.execute(`INSERT INTO cities (city_name, postal_code) 
         VALUES ('${name}', '${nr}');`);
-    };*/
+    };
 
+    await connect.commit();
+    connect.release();
 })()

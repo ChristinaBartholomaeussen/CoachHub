@@ -141,7 +141,6 @@ function validateUser(socket, next) {
         const user = jwt.verify(accessToken, process.env.ACCESS_TOKEN_KEY);
 
         socket.id = user;
-
         next();
 
     } catch (err) {

@@ -158,7 +158,6 @@ publicRouter.post("/coachs", isValidEmail, usernameIsValid, async (req, res) => 
 
     } catch (err) {
         connect.rollback();
-        console.log(err);
         return res.status(400).send();
     }
 });

@@ -19,7 +19,7 @@ messageForm.addEventListener("submit", e => {
 });
 
 socket.on("user-has-joined", name => {
-    appendMessage(`${name} har tilslutte sig forumet`, new Date());
+    appendMessage(`${name} har tilslutte sig forummet`, new Date());
 });
 
 socket.on("load-messages", data => {
@@ -41,7 +41,7 @@ socket.on("chat-message", data => {
 });
 
 socket.on("user-disconnected", name => {
-    appendMessage(`${name} har forladt forumet`);
+    appendMessage(`${name} har forladt forummet`, new Date());
 });
 
 

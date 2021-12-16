@@ -45,6 +45,7 @@ app.use("/coachs", authenticateToken, isCoach, coachRouter);
 app.use("/api/sports", sportsRouter);
 
 const forum = io.of("/forum");
+
 forum.use(validateUser);
 
 forum.on("connection", async (socket) => {

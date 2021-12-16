@@ -10,7 +10,7 @@ import { isValidEmail } from "../middleware/auth.js";
 
 // PAGES -------------------------------------------------------------
 const athleteFrontpage = createAthletePage("/athlete/frontpage/frontpage.html", {
-    title: " Velkommen "
+    title: " Velkommen ",
 });
 
 const homepage = createAthletePage("/athlete/homepage/homepage.html", {
@@ -142,7 +142,6 @@ athleteRouter.post("/bookings", async (req, res) => {
         return res.status(200).send();
 
     } catch (err) {
-        console.log(err)
         connect.rollback();
         return res.status(500).send();
     }
