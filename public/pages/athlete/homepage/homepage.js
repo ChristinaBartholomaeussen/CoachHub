@@ -46,7 +46,7 @@ function updateInfo() {
     fetch("/athletes", {
         method: "PATCH",
         headers: {
-            "Content-type": "application/json"
+            "Content-type": "application/json; charset=UTF-8"
         },
         body: JSON.stringify({
             email: document.getElementById("email").value,
@@ -92,7 +92,7 @@ function deleteUser() {
     fetch("/athletes", {
         method: "DELETE",
         headers: {
-            "Content-type": "application/json"
+            "Content-type": "application/json; charset=UTF-8"
         }
     }).then(response => {
 

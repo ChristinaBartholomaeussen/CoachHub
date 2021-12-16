@@ -103,7 +103,7 @@ function acceptProfile(userId, coachDiv, parentDiv) {
     fetch(`/admin/profiles/${userId}`, {
         method: "PATCH",
         headers: {
-            "Content-type": "application/json"
+            "Content-type": "application/json; charset=UTF-8"
         }
     })
         .then(response => {

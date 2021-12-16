@@ -272,7 +272,7 @@ function acceptBooking(e) {
     fetch(`/coachs/bookings/${e.currentTarget.bookingId}`, {
         method: "PATCH",
         headers: {
-            "Content-type": "application/json"
+            "Content-type": "application/json; charset=UTF-8"
         },
         body: JSON.stringify({
             email: e.currentTarget.email,
@@ -310,7 +310,7 @@ function rejectBooking(e) {
     fetch(`/coachs/bookings/${e.currentTarget.bookingId}`, {
         method: "DELETE",
         headers: {
-            "Content-type": "application/json"
+            "Content-type": "application/json; charset=UTF-8"
         }
     }).then(response => {
 

@@ -152,7 +152,7 @@ function validateCommercialForm() {
 
         toastr.warning("Indtast venligst et gyldigt cvrnummer.");
         return false;
-        
+
     } else if (!isConfirmed.checked) {
 
         toastr.warning("Du skal acceptere betingelserne, før du kan fortsætte.");
@@ -200,7 +200,7 @@ function postNewCoach() {
     fetch("/coachs", {
         method: "POST",
         headers: {
-            "Content-type": "application/json"
+            "Content-type": "application/json; charset=UTF-8"
         },
         body: JSONbody
     }).then(response => {

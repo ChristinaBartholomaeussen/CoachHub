@@ -82,7 +82,7 @@ function updateInfo() {
     fetch("/coachs", {
         method: "PATCH",
         headers: {
-            "Content-type": "application/json"
+            "Content-type": "application/json; charset=UTF-8"
         },
         body: JSONbody
     }).then(response => {
@@ -120,7 +120,7 @@ function deleteUser() {
     fetch("/coachs", {
         method: "DELETE",
         headers: {
-            "Content-type": "application/json"
+            "Content-type": "application/json; charset=UTF-8"
         }
     }).then(response => {
 

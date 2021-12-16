@@ -36,7 +36,7 @@ function saveSport() {
         fetch("/api/sports", ({
             method: "POST",
             headers: {
-                "Content-type": "application/json"
+                "Content-type": "application/json; charset=UTF-8"
             },
             body: JSON.stringify({
                 name: document.getElementById("sportName").value

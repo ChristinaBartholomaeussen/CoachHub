@@ -41,7 +41,7 @@ function saveService() {
 
     fetch("/coachs/services", {
         method: "POST",
-        headers: { "Content-type": "application/json" },
+        headers: { "Content-type": "application/json; charset=UTF-8" },
         body: JSON.stringify({
             title: document.getElementById("title").value,
             sport_id: document.getElementById("selectSport").value,
