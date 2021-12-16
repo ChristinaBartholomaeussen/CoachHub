@@ -33,7 +33,7 @@ function authenticateToken(req, res, next) {
 
     if (!token || token === undefined) {
 
-        return res.status(401).redirect("/login");
+        return res.status(401).send();
 
     } else {
         try {

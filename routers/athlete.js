@@ -136,11 +136,13 @@ athleteRouter.post("/bookings", async (req, res) => {
         await connect.execute(`INSERT INTO bookings (booking_date, booking_start, booking_end, athlete_id, session_id)
         VALUES (?, ?, ?, ?, ?)`, [booking_date, booking_start, booking_end, req.user["id"], session_id]);
 
+
         await connect.commit();
         connect.release();
         return res.status(200).send();
 
     } catch (err) {
+        console.log(err)
         connect.rollback();
         return res.status(500).send();
     }

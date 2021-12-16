@@ -173,25 +173,32 @@ fetch("/coachs/bookings")
 
         const bookingWrapper = document.getElementById("booking-wrapper");
         const pendingBookingsCount = document.getElementById("pendingBookingsCountBtn");
+        const endedBookingsWrapper = document.getElementById("ended-bookings-wrapper");
+        const pendingBookingsWrapper = document.getElementById("pending-bookings-modal-list");
+
+        const upCommingBookings = bookings.filter(booking => new Date(booking["booking_date"]) > Date.now())
+            .sort((bookingA, bookingB) => new Date(bookingA["booking_date"]) - new Date(bookingB["booking_date"]));
+
+           
 
         let count = 0;
+
         bookings.map(booking => {
 
             if (booking["isConfirmed"] === 0) {
                 count += 1;
-                const pendingBookingsWrapper = document.getElementById("pending-bookings-modal-list");
 
                 const li = document.createElement("li");
                 li.id = booking["session_id"];
                 li.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center");
 
-                var bookingDate = new Date(booking["booking_date"]);
+                const bookingDate = new Date(booking["booking_date"]);
 
-                year = bookingDate.getFullYear();
-                month = (bookingDate.getMonth() + 1).toString().padStart(2, "0");
-                day = bookingDate.getDate().toString().padStart(2, "0");
+                const year = bookingDate.getFullYear();
+                const month = (bookingDate.getMonth() + 1).toString().padStart(2, "0");
+                const day = bookingDate.getDate().toString().padStart(2, "0");
 
-                li.innerHTML = `<b>Dato:</b> ${escapeHTML(day)}-${escapeHTML(month)}-${escapeHTML(year)} <br>  
+                li.innerHTML = `<b>Dato:</b> ${day}-${month}-${year} <br>  
                 <b>Tidsrum</b> ${escapeHTML(booking["booking_start"])}-${escapeHTML(booking["booking_end"])} <br>
                 <b>Service:</b> ${escapeHTML(booking["title"])}`;
 
@@ -226,17 +233,25 @@ fetch("/coachs/bookings")
                 const li = document.createElement("li");
                 li.classList.add("list-group-item");
 
-                var bookingDate = new Date(booking["booking_date"]);
+                const bookingDate = new Date(booking["booking_date"]);
 
-                year = bookingDate.getFullYear();
-                month = (bookingDate.getMonth() + 1).toString().padStart(2, "0");
-                day = bookingDate.getDate().toString().padStart(2, "0");
+                const year = bookingDate.getFullYear();
+                const month = (bookingDate.getMonth() + 1).toString().padStart(2, "0");
+                const day = bookingDate.getDate().toString().padStart(2, "0");
 
-                li.innerHTML = `<b>Dato:</b> ${escapeHTML(day)}-${escapeHTML(month)}-${escapeHTML(year)} <br>  
-                <b>Tidsrum</b> ${escapeHTML(booking["booking_start"])}-${escapeHTML(booking["booking_end"])} <br>
+                const start = booking["booking_start"].substring(0, 5);
+                const end = booking["booking_end"].substring(0, 5);
+
+                li.innerHTML = `<b>Dato:</b> ${day}-${month}-${year} <br>  
+                <b>Tidsrum</b> ${escapeHTML(start)}-${escapeHTML(end)} <br>
                 <b>Service:</b> ${escapeHTML(booking["title"])}`;
 
-                bookingWrapper.append(li);
+                if(!upCommingBookings.includes(booking)) {
+                    endedBookingsWrapper.append(li);
+                } else {
+                    bookingWrapper.append(li);
+                }
+  
             }
             pendingBookingsCount.innerText = count;
         });

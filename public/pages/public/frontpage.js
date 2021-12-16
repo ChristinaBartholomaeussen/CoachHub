@@ -23,7 +23,7 @@ function search() {
     const searchValue = document.getElementById("searchValue").value;
 
     if (searchValue === '') {
-        
+
     } else {
         fetch(`/services?sport=${searchValue}`)
             .then(response => response.json())
@@ -203,13 +203,16 @@ function getAvaibleTrainingSessions(e) {
                     const li = document.createElement("li");
                     li.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center");
 
-                    var sessionDate = new Date(session["date"]);
+                    const sessionDate = new Date(session["date"]);
 
-                    year = sessionDate.getFullYear();
-                    month = (sessionDate.getMonth() + 1).toString().padStart(2, "0");
-                    day = sessionDate.getDate().toString().padStart(2, "0");
+                    const year = sessionDate.getFullYear();
+                    const month = (sessionDate.getMonth() + 1).toString().padStart(2, "0");
+                    const day = sessionDate.getDate().toString().padStart(2, "0");
 
-                    li.innerText = `Dato: ${day}-${month}-${year} Tidspunkt: ${session["start"]}-${session["end"]}`;
+                    const start = session["start"].substring(0, 5);
+                    const end = session["end"].substring(0, 5);
+
+                    li.innerText = `Dato: ${day}-${month}-${year} Tidspunkt: ${start}-${end}`;
                     const bookBtn = document.createElement("button");
                     bookBtn.classList.add("btn", "btnMain");
                     bookBtn.innerText = "Book denne tid";

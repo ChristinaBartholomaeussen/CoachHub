@@ -66,6 +66,9 @@ coachRouter.patch("/bookings/:id", async (req, res) => {
         await connect.execute(`UPDATE bookings SET isConfirmed = 1
         WHERE session_id = ?;`, [sessionId]);
 
+        await connect.execute(`UPDATE training_sessions SET isBooked = 1 WHERE session_id = ?;`, 
+        [sessionId]);
+
         const transporter = nodemailer.createTransport({
             port: 465,
             host: "smtp.gmail.com",
@@ -269,7 +272,7 @@ coachRouter.get("/training-sessions", async (req, res) => {
         const [rows] = await connectionPool.query(`SELECT ts.*, s.title FROM training_sessions ts
         JOIN services s ON ts.service_id = s.service_id
         JOIN coachs c ON s.user_id = c.user_id
-        WHERE c.user_id = ?`, [req.user["id"]]);
+        WHERE c.user_id = ? AND ts.isBooked = 0`, [req.user["id"]]);
 
         return res.send({ training_sesssions: rows });
 
