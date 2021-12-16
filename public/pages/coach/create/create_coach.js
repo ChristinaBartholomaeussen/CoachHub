@@ -64,10 +64,10 @@ function validatePrivateForm() {
     const username = document.getElementById("usernameP").value;
     const phone = document.getElementById("phoneP").value;
 
-    if (firstName.trim().length === 0 || lastName.trim().length === 0 || streetName.trim().length === 0 || 
-    postalCode.trim().length === 0 || email.trim().length === 0 || houseNumber.trim().length === 0 || 
-    password.trim().length === 0 || password2.trim().length === 0 || username.trim().length === 0 ||
-    phone.trim().length === 0) {
+    if (firstName.trim().length === 0 || lastName.trim().length === 0 || streetName.trim().length === 0 ||
+        postalCode.trim().length === 0 || email.trim().length === 0 || houseNumber.trim().length === 0 ||
+        password.trim().length === 0 || password2.trim().length === 0 || username.trim().length === 0 ||
+        phone.trim().length === 0) {
 
         toastr.warning("Udfyld venligst alle felter");
         return false;
@@ -117,11 +117,11 @@ function validateCommercialForm() {
     const password2 = document.getElementById("passwordC1").value;
     const username = document.getElementById("usernameC").value;
     const phone = document.getElementById("phoneC").value;
-    
-    if (companyName.trim().length === 0 || cvrNumber.trim().length === 0 || streetName.trim().length === 0 || 
-    postalCode.trim().length === 0 || email.trim().length === 0 || houseNumber.trim().length === 0 || 
-    password.trim().length === 0 || password2.trim().length === 0 || username.trim().length === 0 ||
-    phone.trim().length === 0) {
+
+    if (companyName.trim().length === 0 || cvrNumber.trim().length === 0 || streetName.trim().length === 0 ||
+        postalCode.trim().length === 0 || email.trim().length === 0 || houseNumber.trim().length === 0 ||
+        password.trim().length === 0 || password2.trim().length === 0 || username.trim().length === 0 ||
+        phone.trim().length === 0) {
 
         toastr.warning("Udfyld venligst alle felter");
         return false;
@@ -147,13 +147,18 @@ function validateCommercialForm() {
 
         toastr.warning("Indtast venligst en gyldig emailadresse.");
         return false;
+    }
+    else if (cvrNumber.length !== 8 || regNumber.test(phone) === false) {
 
+        toastr.warning("Indtast venligst et gyldigt cvrnummer.");
+        return false;
+        
     } else if (!isConfirmed.checked) {
 
         toastr.warning("Du skal acceptere betingelserne, før du kan fortsætte.");
         return false;
 
-    } 
+    }
 
     return true;
 }
