@@ -107,7 +107,7 @@ adminRouter.patch("/profiles/:userId", async (req, res) => {
 
     } catch (err) {
         connect.rollback();
-        return res.status(500).send();
+        return res.status(500).send(({error: err}));
     }
 });
 

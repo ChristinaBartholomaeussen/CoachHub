@@ -115,6 +115,9 @@ function acceptProfile(userId, coachDiv, parentDiv) {
                     parentDiv.removeChild(coachDiv);
                     break;
                 case 500:
+                    response.json().then(({error}) => {
+                        console.log(error);
+                    })
                     toastr.error("Der skete en fejl. Prøv igen senere.");
                     console.log(response.statusText);
                     break;
