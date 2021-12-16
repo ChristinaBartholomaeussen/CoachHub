@@ -30,7 +30,7 @@ serviceRouter.get("/:id", async (req, res) => {
 
     try {
 
-        const [rows] = await connect.execute(`SELECT ts.session_id, s.service_id, s.price, s.duration, s.cancellation_notice, s.cancellation_fee,
+        const [rows] = await connect.execute(`SELECT ts.session_id, s.service_id, s.price, s.cancellation_notice, s.cancellation_fee,
         c.phone_number, a.street_name, a.number, ci.city_name, ci.postal_code,
         pc.first_name, pc.last_name, cc.company_name, cc.cvr_number, u.email
         FROM services s
@@ -47,7 +47,6 @@ serviceRouter.get("/:id", async (req, res) => {
         return res.send({ services: rows });
 
     } catch (err) {
-        console.log(err);
         return res.status(500).send();
     }
 });

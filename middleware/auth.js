@@ -1,12 +1,15 @@
 import dotenv from "dotenv";
 dotenv.config();
+
 import jwt from "jsonwebtoken";
 
-import {connectionPool} from "../database/config.js";
+import cookie from "cookie";
 
+import { connectionPool } from "../database/config.js";
 import { createPage } from "../render/render.js";
 
-const notAuth = createPage("403error.html", {
+
+const notAuth = createPage("./public/error/403error.html", {
     title: "Error 403 | Unauthorized "
 });
 
@@ -25,12 +28,12 @@ async function tokenIsValid(req, res, next) {
 
 
 function authenticateToken(req, res, next) {
-   
+
     const token = req.cookies.accessToken;
 
     if (!token || token === undefined) {
 
-        return res.status(401).send();
+        return res.status(401).redirect("/login");
 
     } else {
         try {
@@ -73,12 +76,12 @@ async function isValidEmail(req, res, next) {
 
     const [rows] = await connectionPool.execute(`SELECT * FROM users WHERE email = ?`, [req.body.email]);
 
-    if(req.user === undefined) {
+    if (req.user === undefined) {
 
         if (Object.entries(rows).length === 0) {
 
             return next();
-    
+
         } else {
             return res.status(409).send();
         }
@@ -98,7 +101,7 @@ async function usernameIsValid(req, res, next) {
 
     const [rows] = await connect.execute(`SELECT * FROM users WHERE username = ?`, [req.body.username]);
 
-    if(Object.entries(rows).length === 0) {
+    if (Object.entries(rows).length === 0) {
         return next();
     } else {
         return res.status(409).send();
@@ -130,7 +133,24 @@ async function isEnabled(req, res, next) {
 
 };
 
-export { authenticateToken, isAuthorized, isEnabled, tokenIsValid, isValidEmail, usernameIsValid, isAthlete, isCoach};
+function validateUser(socket, next) {
+    try {
+
+        const cookief = socket.handshake.headers.cookie;
+        const accessToken = cookie.parse(cookief).accessToken;
+        const user = jwt.verify(accessToken, process.env.ACCESS_TOKEN_KEY);
+
+        socket.id = user;
+
+        next();
+
+    } catch (err) {
+        next(err);
+    }
+
+};
+
+export { authenticateToken, isAuthorized, isEnabled, tokenIsValid, isValidEmail, usernameIsValid, isAthlete, isCoach, validateUser };
 
 
 

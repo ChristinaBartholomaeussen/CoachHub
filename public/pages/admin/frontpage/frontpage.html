@@ -1,0 +1,67 @@
+<div class="container">
+
+    <div class="row justify-content-center align-items-center" style="padding-top: 5px;">
+
+        <div class="col-sm-4 p-3" style="max-height: 460px;">
+
+            <div class="p-3 border bg-light text-center" style="border-radius: 12px;">
+                <h3>Sportsgrene</h3>
+
+                <button type="button" class="btn btnMain" data-bs-toggle="modal" style="margin: 10px;"
+                    data-bs-target="#createSportModal">
+                    Opret
+                </button>
+
+                <div id="sports-wrapper" class="list-group overflow-auto" style="max-height: 260px">
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-8 p-3" style="height: fit-content;">
+
+            <div class="p-3 border bg-light text-center" style="border-radius: 12px;">
+
+                <div class="row p-5">
+                    <a>
+                        <h4>Profiler, der afventer godkendelse</h4>
+                    </a>
+                    <div class="col" id="profilesToAccept">
+                    </div>
+                </div>
+
+                <div class="row p-5">
+                    <a>
+                        <h4>Services, der afventer godkendelse</h4>
+                    </a>
+
+                    <div class="col" id="servicesToAccept">
+                        <h3>0</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="createSportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newSport">Ny Sportsgren</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="sportName" class="form-control" name="sportName" placeholder="Sport">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Luk</button>
+                    <button id="saveSport" type="button" class="btn btnMain">Gem</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<script src="../pages/admin/frontpage/frontpage.js"></script>

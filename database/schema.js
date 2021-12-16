@@ -11,9 +11,6 @@ import fetch from "node-fetch";
     bookings, confirmation_tokens, athletes, training_sessions, services,
     sports, commercial_coachs, private_coachs, coachs, coach_types, users,
     roles, address;`);
-
-    //await connectionPool.execute(`DROP TABLE IF EXISTS training_sessions;`);
-
     
     const cities = `CREATE TABLE IF NOT EXISTS cities (
             city_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -97,8 +94,6 @@ import fetch from "node-fetch";
             title VARCHAR(250) NOT NULL,
             description VARCHAR(500) NOT NULL,
             price DOUBLE NOT NULL,
-            duration VARCHAR(5) NOT NULL,
-            preperation_time VARCHAR(5),
             cancellation_notice VARCHAR(5),
             cancellation_fee DOUBLE,
             address_id INT,

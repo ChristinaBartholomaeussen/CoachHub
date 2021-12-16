@@ -1,0 +1,57 @@
+<div class="container">
+    <div class="d-flex flex-row justify-content-center align-items-center" style="padding: 3rem">
+        <div class="col justify-content-center">
+            <div class="card">
+                <div class="row">
+                    <div class="col-sm-6 d-flex justify-content-center my-auto">
+                        <img src="../../assets/default_profilepictue.jpg" style="height: 100%"
+                            class="img-fluid rounded-start" alt="...">
+                    </div>
+
+                    <div class="col-sm-6 d-flex justify-content-center my-auto">
+                        <div class="card-body">
+                            <h5 id="name" class="card-title"></h5>
+
+                            <form id="myForm" value=''>
+
+                                <input type="text" class="form-control" id="firstNameCompanyName" required>
+
+                                <input type="text" class="form-control" id="cvrLastName" required>
+
+                                <input type="email" class="form-control" id="email" required>
+
+                                <input type="text" class="form-control" minlength="8" maxlength="8" id="phone" required>
+
+                                <input type="text" class="form-control" id="streetName" required>
+
+                                <input type="number" class="form-control" id="number" required>
+
+                                <input type="text" class="form-control" id="city" required>
+
+                                <input type="text" minlength="4" maxlength="4" class="form-control" id="postalCode"
+                                    required>
+
+                                <div class="d-flex justify-content-center">
+                                    <button id="save" type="submit" class="btn btnMain" disabled>Gem Ændringer</button>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row card-footer">
+                    <div class="col-sm-6 d-flex justify-content-center my-auto">
+                        <h3><i type="button" class="bi bi-upload"></i></h3>
+                    </div>
+                    <div class="col-sm-6 d-flex justify-content-center my-auto">
+                        <h3><i type="button" id="delete" class="bi bi-trash-fill"></i></h3>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../pages/coach/homepage/homepage.js"></script>

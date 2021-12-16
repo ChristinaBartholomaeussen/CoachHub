@@ -139,7 +139,6 @@ footer p {
     }
 }
 
-/* Simple CSS3 Fade-in Animation */
 @-webkit-keyframes fadeIn {
     from {
         opacity: 0;
@@ -199,6 +198,18 @@ footer p {
     -webkit-animation-delay: 0.8s;
     -moz-animation-delay: 0.8s;
     animation-delay: 0.8s;
+}
+
+.profile-div {
+    width: 18rem;
+    margin: 10px;
+    height: 641px;
+}
+
+.accept-decline-btn-wrapper {
+    flex: 0;
+    position: absolute;
+    bottom: 0;
 }
 
 .own-chat-message {
