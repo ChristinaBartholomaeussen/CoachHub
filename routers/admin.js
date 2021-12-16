@@ -99,6 +99,7 @@ adminRouter.patch("/profiles/:userId", async (req, res) => {
         transporter.sendMail(mailOption, (error) => {
             if (error) {
 
+                connect.rollback();
                 return res.status(500).send();
             }
 
