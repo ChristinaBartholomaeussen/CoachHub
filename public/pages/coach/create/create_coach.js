@@ -137,7 +137,7 @@ function validateCommercialForm() {
         toastr.warning("Indtast venligst et gyldigt postnummer.");
         return false;
 
-    } else if (phone !== 8 ||
+    } else if (phone.length !== 8 ||
         regNumber.test(phone) === false) {
 
         toastr.warning("Indtast venligst et gyldigt telefonnummer.");
