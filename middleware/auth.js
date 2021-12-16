@@ -21,7 +21,7 @@ async function tokenIsValid(req, res, next) {
             return res.status(410).send({ message: "token er udløbet" });
         }
         else {
-            next();
+            return next();
         }
     })
 }
