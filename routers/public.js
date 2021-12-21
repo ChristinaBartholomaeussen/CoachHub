@@ -189,8 +189,8 @@ publicRouter.post("/athletes", isValidEmail, usernameIsValid, async (req, res) =
         const transporter = nodemailer.createTransport({
             host: "Gmail",
             auth: {
-                user: process.env.NODEMAILER_USER,
-                pass: process.env.NODEMAILER_PASS
+                user: apikey,
+                pass: process.env.SENDGRID_API_KEY
             },
             secure: true
         });

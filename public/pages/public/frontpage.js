@@ -88,11 +88,12 @@ function showServices(services) {
 
     services.map(service => {
 
+        console.log(service["service_id"]);
+        
         const col = document.createElement("div");
         col.classList.add("col-sm-3", "d-flex");
         col.id = service["service_id"];
         coachWrapper.append(col);
-
 
         const serviceCard = document.createElement("div");
         serviceCard.classList.add("card", "mb-2");
@@ -131,7 +132,6 @@ function showServices(services) {
             getServiceById(service["service_id"]);
         })
         lookBtn.append(btnIcon);
-
     });
 
 }
@@ -155,6 +155,8 @@ function getServiceById(serviceId) {
             const avaiableSessionsBtn = document.getElementById("avaiableSessionsBtn");
 
             services.map(service => {
+
+                
 
                 if (!service["first_name"]) {
                     document.getElementById("coachNameCompanyname").innerText =
@@ -185,7 +187,6 @@ function getServiceById(serviceId) {
 function getAvaibleTrainingSessions(e) {
 
     document.getElementById("avaiableSessions-wrapper").innerText = "";
-
 
     readMoreModal.hide();
     avaiableSessions.show();

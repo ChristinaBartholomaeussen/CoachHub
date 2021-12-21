@@ -27,20 +27,21 @@ serviceRouter.get("/:id", async (req, res) => {
 
     const serviceId = req.params.id;
     const connect = await connectionPool.getConnection();
-
+    
+    
     try {
 
         const [rows] = await connect.execute(`SELECT ts.session_id, s.service_id, s.price, s.cancellation_notice, s.cancellation_fee,
         c.phone_number, a.street_name, a.number, ci.city_name, ci.postal_code,
         pc.first_name, pc.last_name, cc.company_name, cc.cvr_number, u.email
-        FROM services s
-        JOIN training_sessions ts on ts.service_id = s.service_id
-        JOIN address a ON s.address_id = a.address_id
-        JOIN coachs c ON a.address_id = c.address_id
-        LEFT JOIN private_coachs pc ON pc.user_id = c.user_id
-        LEFT JOIN commercial_coachs cc ON c.user_id = cc.user_id
-        JOIN users u ON u.user_id = c.user_id
-        JOIN cities ci ON a.city_id = ci.city_id
+        from services s
+        LEFT JOIN training_sessions ts ON s.service_id = ts.service_id
+        LEFT JOIN commercial_coachs cc ON s.user_id = cc.user_id
+        LEFT JOIN private_coachs pc ON s.user_id = pc.user_id
+        JOIN coachs c ON s.user_id = c.user_id
+        JOIN users u ON c.user_id = u.user_id
+        JOIN address a ON c.address_id = a.address_id
+        JOIN cities ci ON ci.city_id = a.city_id
         WHERE s.service_id = ?;`, [serviceId]);
 
         connect.release();
