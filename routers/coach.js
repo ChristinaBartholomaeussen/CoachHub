@@ -70,8 +70,7 @@ coachRouter.patch("/bookings/:id", async (req, res) => {
         [sessionId]);
 
         const transporter = nodemailer.createTransport({
-            port: 465,
-            host: "smtp.gmail.com",
+            host: "Gmail",
             auth: {
                 user: process.env.NODEMAILER_USER,
                 pass: process.env.NODEMAILER_PASS
@@ -224,11 +223,11 @@ coachRouter.patch("/", isValidEmail, async (req, res) => {
 
                 await connect.execute(`UPDATE users u 
                     JOIN coachs c ON u.user_id = c.user_id
-                    JOIN commercial_coachs cc on c.user_id = cc.user_id 
-                    SET cc.company_name = ?, cc.cvr_number = ?, u.email = ?, 
-                    c.phone_number = ?, u.address_id = ?,
-                    WHERE u.user_id = ?;`, [first_name, last_name, email, phone_number, street_name,
-                    number, ResultHeader["insertId"], req.user["id"]]);
+                    JOIN private_coachs cp on c.user_id = cp.user_id 
+                    SET cp.first_name = ?, cp.last_name = ?, u.email = ?, 
+                    c.phone_number = ?, c.address_id = ?
+                    WHERE u.user_id = ?;`, [first_name, last_name, email, phone_number,
+                        ResultHeader["insertId"], req.user["id"]]);
 
 
                 await connect.commit();
@@ -249,9 +248,9 @@ coachRouter.patch("/", isValidEmail, async (req, res) => {
                 JOIN coachs c ON u.user_id = c.user_id
                 JOIN commercial_coachs cc on c.user_id = cc.user_id 
                 SET cc.company_name = ?, cc.cvr_number = ?, u.email = ?, 
-                c.phone_number = ?, u.address_id = ?,
-                WHERE u.user_id = ?;`, [company_name, cvr_number, email, phone_number, street_name,
-                    number, ResultHeader["insertId"], req.user["id"]]);
+                c.phone_number = ?, c.address_id = ?
+                WHERE u.user_id = ?;`, [company_name, cvr_number, email, phone_number,
+                    ResultHeader["insertId"], req.user["id"]]);
 
                 await connect.commit();
                 connect.release();
@@ -383,7 +382,6 @@ coachRouter.post("/services", async (req, res) => {
 
     } catch (err) {
         connect.rollback();
-        console.log(err);
         return res.status(500).send();
     }
 

@@ -78,8 +78,7 @@ adminRouter.patch("/profiles/:userId", async (req, res) => {
         connect.release();
 
         const transporter = nodemailer.createTransport({
-            port: 465,
-            host: "smtp.gmail.com",
+            host: "Gmail",
             auth: {
                 user: process.env.NODEMAILER_USER,
                 pass: process.env.NODEMAILER_PASS

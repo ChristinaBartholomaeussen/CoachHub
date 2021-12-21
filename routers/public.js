@@ -187,8 +187,7 @@ publicRouter.post("/athletes", isValidEmail, usernameIsValid, async (req, res) =
             VALUES (?, ?);`, [token, ResultSetHeader["insertId"]]);
 
         const transporter = nodemailer.createTransport({
-            port: 465,
-            host: "smtp.gmail.com",
+            host: "Gmail",
             auth: {
                 user: process.env.NODEMAILER_USER,
                 pass: process.env.NODEMAILER_PASS
