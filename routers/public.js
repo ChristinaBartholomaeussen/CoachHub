@@ -5,6 +5,7 @@ import express from "express";
 const publicRouter = express.Router();
 
 import nodemailer from "nodemailer";
+import sgTranport from "nodemailer-sendgrid-transport";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -186,14 +187,11 @@ publicRouter.post("/athletes", isValidEmail, usernameIsValid, async (req, res) =
         await connect.execute(`INSERT INTO confirmation_tokens (token, user_id)
             VALUES (?, ?);`, [token, ResultSetHeader["insertId"]]);
 
-        const transporter = nodemailer.createTransport({
-            host: "Gmail",
+        const transporter = nodemailer.createTransport(sgTranport({
             auth: {
-                user: apikey,
-                pass: process.env.SENDGRID_API_KEY
+                api_key: process.env.SENDGRID_API_KEY
             },
-            secure: true
-        });
+        }));
 
         //const link = `http://localhost:8080/confirm?token=${token}`; // development link
         const link = `https://christina-nodejs-eksamen.herokuapp.com/confirm?token=${token}`; //deploy link
