@@ -69,14 +69,11 @@ coachRouter.patch("/bookings/:id", async (req, res) => {
         await connect.execute(`UPDATE training_sessions SET isBooked = 1 WHERE session_id = ?;`, 
         [sessionId]);
 
-        const transporter = nodemailer.createTransport({
-            host: "Gmail",
+        const transporter = nodemailer.createTransport(sgTranport({
             auth: {
-                user: process.env.NODEMAILER_USER,
-                pass: process.env.NODEMAILER_PASS
+                api_key: process.env.SENDGRID_API_KEY
             },
-            secure: true
-        });
+        }));
 
         const mailOption = {
             from: process.env.NODEMAILER_USER,

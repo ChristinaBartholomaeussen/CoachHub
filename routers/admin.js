@@ -8,6 +8,7 @@ import { connectionPool } from "../database/config.js";
 import { createAdminPage } from "../render/render.js";
 
 import nodemailer from "nodemailer";
+import sgTransport from "nodemailer-sendgrid-transport";
 
 const adminPage = createAdminPage("/admin/frontpage/frontpage.html", {
     title: "Admin | Frontpage "
@@ -77,14 +78,11 @@ adminRouter.patch("/profiles/:userId", async (req, res) => {
         await connect.commit();
         connect.release();
 
-        const transporter = nodemailer.createTransport({
-            host: "Gmail",
+        const transporter = nodemailer.createTransport(sgTranport({
             auth: {
-                user: process.env.NODEMAILER_USER,
-                pass: process.env.NODEMAILER_PASS
+                api_key: process.env.SENDGRID_API_KEY
             },
-            secure: true
-        });
+        }));
 
         const mailOption = {
             from: process.env.NODEMAILER_USER,
