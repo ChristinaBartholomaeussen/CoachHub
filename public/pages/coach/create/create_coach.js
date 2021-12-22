@@ -226,10 +226,4 @@ function postNewCoach() {
         }
 
     });
-
-
-
-
-
-
 }
