@@ -78,7 +78,7 @@ adminRouter.patch("/profiles/:userId", async (req, res) => {
         await connect.commit();
         connect.release();
 
-        const transporter = nodemailer.createTransport(sgTranport({
+        const transporter = nodemailer.createTransport(sgTransport({
             auth: {
                 api_key: process.env.SENDGRID_API_KEY
             },
@@ -95,11 +95,9 @@ adminRouter.patch("/profiles/:userId", async (req, res) => {
 
         transporter.sendMail(mailOption, (error) => {
             if (error) {
-
                 connect.rollback();
                 return res.status(500).send();
             }
-
             return res.status(200).send();
         });
 
