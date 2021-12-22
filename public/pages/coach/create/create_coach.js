@@ -217,7 +217,7 @@ function postNewCoach() {
                 break;
 
             case 409:
-                toastr.warning("Der findes allerede en bruger med den valgte email eller brugernavn.");
+                toastr.warning("Der findes allerede en bruger med den valgte email, brugernavn, CVR-nummer eller virksomhedsnavn.");
                 break;
 
             case 500:

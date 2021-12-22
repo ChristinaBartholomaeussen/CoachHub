@@ -158,6 +158,11 @@ publicRouter.post("/coachs", isValidEmail, usernameIsValid, async (req, res) => 
 
     } catch (err) {
         connect.rollback();
+        
+        if(err.code === "ER_DUP_ENTRY") {
+            return res.status(409).send();
+        }
+
         return res.status(500).send();
     }
 });
