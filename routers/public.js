@@ -219,7 +219,6 @@ publicRouter.post("/athletes", isValidEmail, usernameIsValid, async (req, res) =
         return res.status(201).send();
 
     } catch (err) {
-        console.log(err);
         connect.rollback();
         return res.status(500).send();
     }
@@ -253,7 +252,6 @@ publicRouter.get("/confirm", tokenIsValid, async (req, res) => {
         return res.redirect("/login");
 
     } catch (err) {
-        console.log(err);
         connect.rollback();
         return res.status(500).send();
     }
@@ -275,7 +273,7 @@ publicRouter.get("/training_session", async (req, res) => {
         return res.send({ sessions: rows });
 
     } catch (err) {
-        console.log(err);
+    
         return res.status(500).send();
     }
 });

@@ -104,7 +104,6 @@ coachRouter.patch("/bookings/:id", async (req, res) => {
 
     } catch (err) {
         connect.rollback();
-        console.log(err);
         return res.status(500).send();
     }
 });

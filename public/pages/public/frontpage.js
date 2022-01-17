@@ -89,7 +89,7 @@ function showServices(services) {
     services.map(service => {
 
         console.log(service["service_id"]);
-        
+
         const col = document.createElement("div");
         col.classList.add("col-sm-3", "d-flex");
         col.id = service["service_id"];
@@ -156,7 +156,7 @@ function getServiceById(serviceId) {
 
             services.map(service => {
 
-                
+
 
                 if (!service["first_name"]) {
                     document.getElementById("coachNameCompanyname").innerText =
@@ -199,7 +199,10 @@ function getAvaibleTrainingSessions(e) {
 
             if (Object.entries(sessions).length !== 0) {
 
-                sessions.map(session => {
+
+                sessions.filter(session => new Date(session["date"]) > Date.now())
+                    .sort((sessionA, sessionB) => new Date(sessionA["date"]) - new Date(sessionB["date"]))
+                    .map(session => {
 
                     const li = document.createElement("li");
                     li.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center");
