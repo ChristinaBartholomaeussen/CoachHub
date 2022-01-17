@@ -6,6 +6,8 @@ import { createCoachPage } from "../render/render.js";
 import { isValidEmail } from "../middleware/auth.js";
 import nodemailer from "nodemailer";
 
+import sgTranport from "nodemailer-sendgrid-transport";
+
 // PAGES --------------------------------------------
 const coachServices = createCoachPage("/coach/services/services.html", {
     title: " Mine Ydelser "
@@ -91,6 +93,7 @@ coachRouter.patch("/bookings/:id", async (req, res) => {
             if (error) {
 
                 connect.rollback();
+                
                 return res.status(500).send();
             }
 
@@ -101,6 +104,7 @@ coachRouter.patch("/bookings/:id", async (req, res) => {
 
     } catch (err) {
         connect.rollback();
+        console.log(err);
         return res.status(500).send();
     }
 });
