@@ -88,8 +88,6 @@ function showServices(services) {
 
     services.map(service => {
 
-        console.log(service["service_id"]);
-
         const col = document.createElement("div");
         col.classList.add("col-sm-3", "d-flex");
         col.id = service["service_id"];
